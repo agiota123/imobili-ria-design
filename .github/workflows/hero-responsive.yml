@@ -1,0 +1,45 @@
+name: Configure responsive hero
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-hero:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply hero aspect-ratio rules
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = ".hero{position:relative;min-height:calc(100vh - 82px);display:grid;"
+          new = ".hero{position:relative;aspect-ratio:16/9;min-height:0;display:grid;"
+          if old not in s:
+              raise SystemExit('Desktop hero rule not found')
+          s = s.replace(old, new, 1)
+          marker = "@media(prefers-reduced-motion:reduce)"
+          mobile = "@media(max-width:600px){.hero{aspect-ratio:auto;min-height:100dvh}}\n"
+          if mobile not in s:
+              s = s.replace(marker, mobile + marker, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Commit hero configuration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          if git diff --cached --quiet; then
+            echo 'No changes needed.'
+          else
+            git commit -m 'Configure hero 16:9 desktop and full-height mobile'
+            git push
+          fi
