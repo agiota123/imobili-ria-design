@@ -1,4 +1,4 @@
-name: Configure responsive hero
+name: Configure site navigation
 
 on:
   push:
@@ -8,31 +8,44 @@ permissions:
   contents: write
 
 jobs:
-  fix-hero:
+  update-site-navigation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Apply hero aspect-ratio rules
+      - name: Add social navigation controls
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          old = ".hero{position:relative;min-height:calc(100vh - 82px);display:grid;"
-          new = ".hero{position:relative;aspect-ratio:16/9;min-height:0;display:grid;"
-          if old not in s:
-              raise SystemExit('Desktop hero rule not found')
-          s = s.replace(old, new, 1)
-          marker = "@media(prefers-reduced-motion:reduce)"
-          mobile = "@media(max-width:600px){.hero{aspect-ratio:auto;min-height:100dvh}}\n"
-          if mobile not in s:
-              s = s.replace(marker, mobile + marker, 1)
+
+          # Keep the existing navigation links untouched; only append the requested social controls.
+          marker = '<nav class="nav">'
+          socials = '''<span class="nav-socials" aria-label="Redes sociais">\n<a class="nav-social instagram" href="#" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.5" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></a>\n<a class="nav-social whatsapp" href="https://wa.me/5561000000000" aria-label="WhatsApp" title="WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.1 11.4a8.1 8.1 0 0 1-12 7.1L3.5 20l1.6-4.4a8.1 8.1 0 1 1 15-4.2Z"/><path d="M8.4 8.2c.2-.3.4-.3.7-.3h.5c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.6.7c-.1.1-.1.3 0 .5.4.7 1.1 1.4 1.8 1.8.2.1.4.1.5 0l.7-.7c.2-.2.4-.2.6-.1l1.7.8c.2.1.3.3.2.5l-.2.7c-.1.3-.2.5-.5.7-.4.3-1 .4-1.5.2-1.1-.3-2.2-1-3.2-2-1-.9-1.7-2-2-3.1-.2-.6-.1-1.1.2-1.7Z" fill="currentColor" stroke="none"/></svg></a>\n<span class="nav-phone">61 000000000</span>\n</span>'''
+          if 'class="nav-socials"' not in s:
+              s = s.replace(marker, marker + socials, 1)
+
+          css_marker = '/* hero */'
+          css = '''/* social navigation */\n.nav-socials{display:flex;align-items:center;gap:9px;margin-left:4px;padding-left:22px;border-left:1px solid #c4cac426}.nav-social{display:grid;place-items:center;width:30px;height:30px;color:#d8ddd6;transition:color .25s,background .25s,transform .25s}.nav-social svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.55}.nav-social:hover{color:#fff;transform:translateY(-1px)}.nav-phone{color:#c4cac4;font-size:9px;letter-spacing:.08em;white-space:nowrap}\n'''
+          if '/* social navigation */' not in s:
+              s = s.replace(css_marker, css + css_marker, 1)
+
+          # Keep the desktop 16:9 hero and full-height mobile behavior.
+          old = '.hero{position:relative;min-height:calc(100vh - 82px);display:grid;'
+          new = '.hero{position:relative;aspect-ratio:16/9;min-height:0;display:grid;'
+          if old in s:
+              s = s.replace(old, new, 1)
+          marker_mobile = '@media(prefers-reduced-motion:reduce)'
+          mobile = '@media(max-width:600px){.hero{aspect-ratio:auto;min-height:100dvh}}\n'
+          if mobile not in s and marker_mobile in s:
+              s = s.replace(marker_mobile, mobile + marker_mobile, 1)
+
           p.write_text(s, encoding='utf-8')
           PY
 
-      - name: Commit hero configuration
+      - name: Commit site changes
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -40,6 +53,6 @@ jobs:
           if git diff --cached --quiet; then
             echo 'No changes needed.'
           else
-            git commit -m 'Configure hero 16:9 desktop and full-height mobile'
+            git commit -m 'Add minimal Instagram and WhatsApp navigation controls'
             git push
           fi
