@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1513">\n<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2212%22 fill=%22%230b1513%22/%3E%3Cpath d=%22M10 30 32 11 54 30M17 27V52H47V27M27 52V37H37V52%22 fill=%22none%22 stroke=%22%23d8c39b%22 stroke-width=%224%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1513">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2212%22 fill=%22%230b1513%22/%3E%3Cpath d=%22M10 30 32 11 54 30M17 27V52H47V27M27 52V37H37V52%22 fill=%22none%22 stroke=%22%23d8c39b%22 stroke-width=%224%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
 <title>NOME DA IMOBILIÁRIA — Um novo jeito de encontrar seu lugar</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap');
@@ -68,62 +69,45 @@ footer{padding:45px clamp(24px,5vw,80px) 25px;background:var(--dark);color:#e8e8
 }
 
 
-/* Mobile header spacing refinement */
+/* Final mobile header correction: compact, aligned, and readable */
 @media(max-width:520px){
- .site-header{padding-left:16px;padding-right:16px;gap:0}
- .logo{flex:0 1 auto;margin-right:12px;gap:7px}
- .logo strong{font-size:9px;letter-spacing:.07em}
- .logo small{font-size:5.5px;letter-spacing:.04em}
- .nav{flex:0 0 auto;margin-left:auto}
- .nav-socials{gap:8px}
- .nav-social{width:27px;height:30px}
- .nav-phone{display:inline-block;margin-left:8px;padding-left:8px;border-left:1px solid #c4cac426;font-size:7.5px;letter-spacing:0}
- .mobile-menu-toggle{margin-left:10px}
- .nav.menu-open{margin:0}
- .nav.menu-open>a.nav-cta{margin-top:16px}
-}
-@media(max-width:360px){
- .site-header{padding-left:11px;padding-right:11px}
- .logo{margin-right:8px}
- .logo-icon{width:25px;height:25px;flex-basis:25px}
- .logo strong{font-size:8px;letter-spacing:.04em}
- .logo small{font-size:5px}
- .nav-socials{gap:5px}
- .nav-social{width:23px;height:27px}
- .nav-phone{margin-left:5px;padding-left:5px;font-size:7px}
- .mobile-menu-toggle{margin-left:7px;flex-basis:29px;width:29px}
-}
-
-/* Final mobile header alignment and simple house favicon */
-@media(max-width:520px){
- .site-header{display:flex;justify-content:space-between;gap:0;padding-left:12px;padding-right:12px;overflow:visible}
- .logo{flex:0 1 42%;min-width:0;max-width:42%;margin-right:0;gap:6px;overflow:hidden}
+ .site-header{height:76px;padding:0 12px;display:flex;align-items:center;justify-content:flex-start;gap:0;overflow:visible}
+ .logo{flex:0 1 42%;width:42%;max-width:42%;min-width:0;margin:0;gap:6px;overflow:hidden}
  .logo-icon{width:25px;height:25px;flex:0 0 25px;font-size:15px}
- .logo>span:last-child{min-width:0;overflow:hidden}
+ .logo>span:last-child{min-width:0;max-width:100%;overflow:hidden}
  .logo strong{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:8px;letter-spacing:.025em;white-space:nowrap}
  .logo small{font-size:5px;letter-spacing:0;white-space:nowrap}
- .nav{flex:0 1 auto;min-width:0;margin-left:auto;margin-right:8px}
- .nav-socials{gap:3px;white-space:nowrap}
- .nav-social{width:23px;height:28px;flex:0 0 23px}
+ .nav{display:flex;position:static;flex:0 0 auto;min-width:0;margin:0;gap:0}
+ .nav-socials{display:flex;align-items:center;gap:4px;margin:0 0 0 10px;padding:0;border:0;white-space:nowrap}
+ .nav-social{width:23px;height:28px;flex:0 0 23px;padding:0}
  .nav-social svg{width:14px;height:14px}
- .nav-phone{margin-left:5px;padding-left:6px;font-size:7px;letter-spacing:0}
- .mobile-menu-toggle{margin-left:0;flex:0 0 29px;width:29px}
- .nav.menu-open{margin:0;z-index:40}
+ .nav-phone{display:inline-block;margin-left:5px;padding-left:6px;border-left:1px solid #c4cac426;font-size:7px;letter-spacing:0;white-space:nowrap}
+ .nav>a{display:none}
+ .mobile-menu-toggle{display:flex;flex:0 0 29px;width:29px;height:32px;margin-left:auto;padding:6px 4px;flex-direction:column;justify-content:center;gap:5px;border:1px solid #c7b78f66;border-radius:4px;background:transparent;cursor:pointer}
+ .mobile-menu-toggle span{display:block;width:19px;height:1px;background:#f4f1e8;transition:transform .2s,opacity .2s}
+ .mobile-menu-toggle[aria-expanded="true"] span:first-child{transform:translateY(6px) rotate(45deg)}
+ .mobile-menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+ .mobile-menu-toggle[aria-expanded="true"] span:last-child{transform:translateY(-6px) rotate(-45deg)}
+ .nav.menu-open{position:absolute;top:100%;left:0;right:0;display:flex;flex-direction:column;align-items:stretch;gap:0;margin:0;padding:10px 18px 18px;background:var(--dark);border-top:1px solid #ffffff18;box-shadow:0 16px 24px #0003;z-index:40}
  .nav.menu-open .nav-socials{display:none}
- .nav.menu-open>a.nav-cta{margin-top:18px;max-width:150px;align-self:flex-start;min-height:36px;padding:10px 12px!important;font-size:9px;gap:6px}
+ .nav.menu-open>a{display:flex;align-items:center;min-height:42px;padding:11px 5px!important;border-bottom:1px solid #ffffff15;font-size:11px;line-height:1.2}
+ .nav.menu-open>a.nav-cta{display:inline-flex;align-self:flex-start;justify-content:center;gap:7px;width:auto;max-width:none;min-height:38px;margin:12px 0 0;padding:10px 13px!important;border:0;border-radius:4px;background:#f5f2ea;color:#27302b!important;font-size:10px;line-height:1.2;white-space:nowrap}
+ .finder-wrap{margin:28px auto 0}
+ .finder-mobile-title{font-size:28px;line-height:1.12}
+ .finder-field{padding:17px 18px}
+ .finder-submit{border-radius:4px}
 }
 @media(max-width:360px){
  .site-header{padding-left:9px;padding-right:9px}
- .logo{flex-basis:39%;max-width:39%}
+ .logo{flex-basis:39%;width:39%;max-width:39%}
  .logo strong{font-size:7px}
  .logo small{font-size:4.5px}
- .nav{margin-right:6px}
- .nav-socials{gap:2px}
+ .nav-socials{margin-left:7px;gap:2px}
  .nav-social{width:21px;height:26px;flex-basis:21px}
  .nav-phone{margin-left:3px;padding-left:4px;font-size:6.5px}
  .mobile-menu-toggle{flex-basis:27px;width:27px}
 }
-\n</style>
+</style>
 </head>
 <body>
 <div class="intro" id="intro"><div class="grain"></div><button class="skip" id="skip">Pular ↗</button><div class="stage"><div class="drop"></div><div class="orb"></div><div class="brand"><div class="mark" id="mark">IM</div><p class="brand-name" id="brandName">NOME DA IMOBILIÁRIA</p><p class="tagline" id="tagline">IMÓVEIS • CONSULTORIA • CONFIANÇA</p></div></div></div>
