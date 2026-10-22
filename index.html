@@ -29,10 +29,48 @@ footer{padding:45px clamp(24px,5vw,80px) 25px;background:var(--dark);color:#e8e8
 @media(max-width:360px){.site-header{padding-left:9px;padding-right:9px}.logo{flex-basis:39%;width:39%;max-width:39%}.logo strong{font-size:7px}.logo small{font-size:4.5px}.nav-socials{margin-left:7px;gap:2px}.nav-social{width:21px;height:26px;flex-basis:21px}.nav-phone{margin-left:3px;padding-left:4px;font-size:6.5px}.mobile-menu-toggle{flex-basis:27px;width:27px}}
 @media(max-width:520px){.logo{flex:0 0 auto;width:auto;max-width:none;min-width:0;margin-right:0;overflow:visible}.logo>span:last-child{min-width:max-content;max-width:none;overflow:visible}.logo strong{max-width:none;overflow:visible;text-overflow:clip;letter-spacing:0;font-size:8px}.logo small{max-width:none;overflow:visible;font-size:5px}.nav{margin-right:8px}.nav-socials{margin-left:8px;gap:4px}.nav-phone{margin-left:6px;padding-left:7px;margin-right:14px}.nav-cta{margin-left:10px!important;flex-shrink:0}.mobile-menu-toggle{margin-left:10px;flex-shrink:0}}
 @media(max-width:360px){.logo strong{font-size:7px}.logo small{font-size:4.5px}.nav{margin-right:5px}.nav-socials{margin-left:6px;gap:3px}.nav-phone{margin-left:4px;padding-left:5px;margin-right:10px}.nav-cta{margin-left:8px!important}.mobile-menu-toggle{margin-left:8px}}
+
+/* Cinematic real-estate intro: house silhouette, horizontal light sweep, then brand reveal. */
+.stage{width:min(92vw,680px);height:min(82vh,620px)}
+.house-scene{position:absolute;inset:0;display:grid;place-items:center;opacity:0;animation:houseAppear .95s cubic-bezier(.2,.7,.2,1) .2s both,houseDisappear .65s ease-in 2.78s forwards}
+.house-art{width:min(100%,560px);height:auto;max-height:76%;overflow:visible;filter:drop-shadow(0 12px 24px #98764214)}
+.light-beam{position:absolute;left:50%;top:50%;height:2px;width:min(120vw,900px);transform:translate(-50%,-50%) scaleX(0);transform-origin:center;background:linear-gradient(90deg,transparent 0%,#b58a4240 12%,#c29a50 35%,#fff8dc 50%,#c29a50 65%,#b58a4240 88%,transparent 100%);box-shadow:0 0 9px #c4a05a9c,0 0 26px #d9bf804d;opacity:0;animation:beamSweep 1.12s cubic-bezier(.45,0,.25,1) 1.48s forwards}
+.light-beam:after{content:"";position:absolute;inset:-12px 0;background:linear-gradient(90deg,transparent,#d7b66b20 22%,#fff7d760 50%,#d7b66b20 78%,transparent);filter:blur(7px)}
+.brand{animation:brandReveal 1.05s cubic-bezier(.2,.75,.25,1) 3.2s both}
+@keyframes houseAppear{from{opacity:0;transform:translateY(14px) scale(.96);filter:blur(5px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes beamSweep{0%{opacity:0;transform:translate(-50%,-50%) scaleX(0)}18%{opacity:1}72%{opacity:.95;transform:translate(-50%,-50%) scaleX(1)}100%{opacity:0;transform:translate(-50%,-50%) scaleX(1)}}
+@keyframes houseDisappear{from{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}to{opacity:0;transform:translateY(-8px) scale(1.025);filter:blur(7px)}}
+@keyframes brandReveal{from{opacity:0;transform:translate(-50%,-30%);filter:blur(9px)}to{opacity:1;transform:translate(-50%,-40%);filter:blur(0)}}
+@media(max-width:600px){.stage{width:94vw;height:min(75vh,560px)}.house-art{width:112%;max-width:none}.light-beam{width:120vw}}
+@media(prefers-reduced-motion:reduce){.house-scene,.light-beam,.brand{animation:none!important;opacity:1!important;filter:none!important}.light-beam{display:none}}
+
 </style>
 </head>
 <body>
-<div class="intro" id="intro"><div class="grain"></div><button class="skip" id="skip">Pular ↗</button><div class="stage"><div class="drop"></div><div class="orb"></div><div class="brand"><div class="mark" id="mark">IM</div><p class="brand-name" id="brandName">NOME DA IMOBILIÁRIA</p><p class="tagline" id="tagline">IMÓVEIS • CONSULTORIA • CONFIANÇA</p></div></div></div>
+<div class="intro" id="intro"><div class="grain"></div><button class="skip" id="skip">Pular ↗</button><div class="stage">
+<div class="house-scene" aria-hidden="true">
+<svg class="house-art" viewBox="0 0 440 330" role="presentation" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <linearGradient id="houseGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8d6b35"/><stop offset=".48" stop-color="#d6b878"/><stop offset="1" stop-color="#9c793f"/></linearGradient>
+ <linearGradient id="houseFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffdf7" stop-opacity=".45"/><stop offset="1" stop-color="#d8c39b" stop-opacity=".08"/></linearGradient>
+</defs>
+<g stroke="url(#houseGold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+ <path d="M49 151 220 34 391 151"/>
+ <path d="M75 140V286H365V140"/>
+ <path d="M98 157H342V286H98Z" fill="url(#houseFill)" stroke-width="1.5"/>
+ <path d="M185 286V207Q185 174 220 174Q255 174 255 207V286" fill="#cbb17c" fill-opacity=".10"/>
+ <path d="M199 286V210Q199 194 220 194Q241 194 241 210V286" stroke-width="1.3"/>
+ <path d="M122 177H163V219H122Z M277 177H318V219H277Z" fill="#d8c39b" fill-opacity=".12"/>
+ <path d="M142.5 177V219 M122 198H163 M297.5 177V219 M277 198H318" stroke-width="1.25"/>
+ <path d="M58 286H382 M87 299H353" stroke-width="1.2" opacity=".7"/>
+ <path d="M204 92H236V126H204Z" stroke-width="1.3" opacity=".65"/>
+ <path d="M220 92V126 M204 109H236" stroke-width="1.1" opacity=".65"/>
+</g>
+</svg>
+<div class="light-beam"></div>
+</div>
+<div class="brand"><div class="mark" id="mark">IM</div><p class="brand-name" id="brandName">NOME DA IMOBILIÁRIA</p><p class="tagline" id="tagline">IMÓVEIS • CONSULTORIA • CONFIANÇA</p></div>
+</div></div>
 <div class="site">
 <header class="site-header"><a class="logo" href="#inicio"><span class="logo-icon">⌂</span><span><strong id="headerName">NOME DA IMOBILIÁRIA</strong><small>IMÓVEIS COM INTENÇÃO</small></span></a><nav class="nav"><span class="nav-socials" aria-label="Redes sociais"><a class="nav-social instagram" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.5" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></a><a class="nav-social whatsapp" href="https://wa.me/5561000000000" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M20.1 11.4a8.1 8.1 0 0 1-12 7.1L3.5 20l1.6-4.4a8.1 8.1 0 1 1 15-4.2Z"/><path d="M8.4 8.2c.2-.3.4-.3.7-.3h.5c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.6.7c-.1.1-.1.3 0 .5.4.7 1.1 1.4 1.8 1.8.2.1.4.1.5 0l.7-.7c.2-.2.4-.2.6-.1l1.7.8c.2.1.3.3.2.5l-.2.7c-.1.3-.2.5-.5.7-.4.3-1 .4-1.5.2-1.1-.3-2.2-1-3.2-2-1-.9-1.7-2-2-3.1-.2-.6-.1-1.1.2-1.7Z" fill="currentColor" stroke="none"/></svg></a><span class="nav-phone">61 000000000</span></span><a class="active" href="#inicio">Home</a><a href="#imoveis">Imóveis</a><a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a class="nav-cta" href="#contato">Fale conosco ↗</a></nav><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></header>
 <main>
@@ -52,7 +90,7 @@ document.title=BRAND_CONFIG.name+' — Um novo jeito de encontrar seu lugar';
 ['brandName','headerName','footerName'].forEach(id=>document.getElementById(id).textContent=BRAND_CONFIG.name);document.getElementById('mark').textContent=BRAND_CONFIG.monogram;document.getElementById('tagline').textContent=BRAND_CONFIG.tagline;
 if(BRAND_CONFIG.logo){const img=document.createElement('img');img.src=BRAND_CONFIG.logo;img.alt=BRAND_CONFIG.name;document.getElementById('mark').replaceChildren(img)}
 const mobileMenuToggle=document.getElementById('mobileMenuToggle');const siteNav=document.querySelector('.site-header .nav');mobileMenuToggle.addEventListener('click',()=>{const open=mobileMenuToggle.getAttribute('aria-expanded')!=='true';mobileMenuToggle.setAttribute('aria-expanded',String(open));mobileMenuToggle.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');siteNav.classList.toggle('menu-open',open)});siteNav.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',()=>{siteNav.classList.remove('menu-open');mobileMenuToggle.setAttribute('aria-expanded','false');mobileMenuToggle.setAttribute('aria-label','Abrir menu')}));
-const intro=document.getElementById('intro');let finished=false;function finish(){if(finished)return;finished=true;intro.classList.add('done')}document.getElementById('skip').onclick=finish;if(matchMedia('(prefers-reduced-motion: reduce)').matches)finish();else setTimeout(finish,5200);
+const intro=document.getElementById('intro');let finished=false;function finish(){if(finished)return;finished=true;intro.classList.add('done')}document.getElementById('skip').onclick=finish;if(matchMedia('(prefers-reduced-motion: reduce)').matches)finish();else setTimeout(finish,5700);
 const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');observer.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 const FILTERS={purpose:{title:'O que deseja?',options:['Aluguel','Venda','Aluguel / Venda'],valueId:'purposeValue'},city:{title:'Cidade',options:['Selecionar todas','Brasília','Águas Claras','Arniqueira','Taguatinga','Gama','Guará','Ceilândia','Samambaia','Santa Maria','Sobradinho','Sobradinho II','Planaltina','Paranoá','Itapoã','São Sebastião','Jardim Botânico','Lago Sul','Lago Norte','Sudoeste / Octogonal','Park Way','Cruzeiro','Vicente Pires','Riacho Fundo','Riacho Fundo II','Recanto das Emas','Núcleo Bandeirante','Candangolândia','Estrutural / SCIA','Fercal','Varjão','SIA','Sol Nascente / Pôr do Sol','Arapoanga','Água Quente','Brazlândia'],valueId:'cityValue'},neighborhood:{title:'Bairro',options:['Selecionar todos','Asa Sul','Asa Norte','Noroeste','Sudoeste','Octogonal','Lago Sul','Lago Norte','Park Way','Alphaville','Águas Claras','Arniqueiras','Vicente Pires','Taguatinga Norte','Taguatinga Sul','Guará I','Guará II','Cruzeiro Novo','Cruzeiro Velho','Jardim Botânico','Setor de Mansões Dom Bosco','Setor de Mansões do Lago','Condomínios do Lago Sul','Condomínios do Lago Norte','Setor Habitacional Tororó','Setor Habitacional Altiplano Leste','Setor Habitacional Vicente Pires','Setor de Chácaras','Setor de Clubes Esportivos Sul','Setor de Clubes Esportivos Norte','Setor Comercial Sul','Setor Comercial Norte','Setor Bancário Sul','Setor Bancário Norte','Setor de Embaixadas Sul','Setor de Embaixadas Norte','Setor de Indústrias Gráficas','Setor de Indústria e Abastecimento','Samambaia Sul','Samambaia Norte','Recanto das Emas','Ceilândia Centro','Ceilândia Norte','Ceilândia Sul','Setor O','Setor P Sul','Setor P Norte','Sol Nascente','Pôr do Sol','São Sebastião','Gama','Santa Maria','Sobradinho','Planaltina','Paranoá','Itapoã'],valueId:'neighborhoodValue'},type:{title:'Tipo de imóvel',options:['Apartamento','Casa','Chácara','Garagem','Kitnet','Loja','Lote','Lote comercial','Lote em condomínio','Prédio comercial','Sala','Terreno / área'],valueId:'typeValue'}};
 const dialog=document.getElementById('filterDialog'),optionsEl=document.getElementById('filterOptions'),titleEl=document.getElementById('filterTitle'),selectedEl=document.getElementById('filterSelected');let activeFilter=null,chosen={};
