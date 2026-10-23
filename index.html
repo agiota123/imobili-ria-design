@@ -51,7 +51,7 @@ footer{padding:45px clamp(24px,5vw,80px) 25px;background:var(--dark);color:#e8e8
   .site-header .mobile-menu-toggle{position:relative!important;z-index:1002!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
   .site-header .nav.menu-open{display:flex!important;position:absolute!important;top:100%!important;left:0!important;right:0!important;width:100%!important;height:auto!important;max-height:calc(100dvh - 76px)!important;overflow-y:auto!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:1001!important;background:#202923!important}
   .site-header .nav.menu-open>a{display:flex!important;visibility:visible!important;opacity:1!important;color:#f4f1e8!important}
-  .site-header .nav.menu-open>a.nav-cta{display:inline-flex!important}
+  .site-header .nav.menu-open>a.nav-cta{display:inline-flex!important;background:#f2d7a0!important;color:#202923!important;border:1px solid #d7b975!important;border-radius:999px!important;box-shadow:0 5px 16px #0002!important;font-weight:600!important}
 }
 </style>
 <style id="footer-end-fix">.temporary-admin-access{color:#b8a27a;font-size:9px;text-decoration:none;border:1px solid #b8a27a55;border-radius:999px;padding:8px 12px;white-space:nowrap;transition:background .2s,color .2s}.temporary-admin-access:hover{background:#b8a27a18;color:#e0c99b}@media(max-width:640px){.footer-bottom{flex-wrap:wrap;gap:12px}.temporary-admin-access{order:3}}
@@ -167,6 +167,52 @@ body.cms-mode *{animation-duration:0s!important;scroll-behavior:auto!important}
 }
 </style>
 <style id="intro-scroll-lock-fix">html.intro-lock,body.intro-active{overflow:hidden!important;height:100%!important;overscroll-behavior:none!important;touch-action:none!important}.intro{z-index:99999!important;pointer-events:auto}.intro.done{pointer-events:none}body.cms-mode{touch-action:auto!important;overflow:auto!important;height:auto!important}</style>
+
+<style id="contact-and-mobile-nav-polish">
+/* O menu mobile mantém o CTA legível, mesmo com as regras gerais dos links. */
+@media(max-width:520px){
+  .site-header .nav.menu-open>a.nav-cta,
+  .site-header .nav.menu-open>a.nav-cta:visited{
+    color:#202923!important;background:#f2d7a0!important;border:1px solid #d7b975!important;
+    border-radius:999px!important;padding:12px 18px!important;min-height:42px!important;
+    font-weight:600!important;box-shadow:0 5px 16px #0002!important
+  }
+  .site-header .nav.menu-open>a.nav-cta:after{display:none!important}
+}
+/* Bloco de contato mais editorial, com hierarquia e chamada de ação clara. */
+.site .cta{
+  min-height:0;margin:clamp(28px,5vw,68px) clamp(16px,4.5vw,64px);
+  padding:clamp(34px,6vw,76px) clamp(24px,6vw,82px);
+  display:flex;align-items:center;justify-content:space-between;gap:32px;
+  border:1px solid #d2c3a4;border-radius:20px;
+  background-image:linear-gradient(105deg,rgba(8,20,17,.96) 0%,rgba(8,20,17,.88) 54%,rgba(8,20,17,.48) 100%),url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=2200&q=85');
+  background-size:cover;background-position:center;box-shadow:0 22px 55px rgba(20,31,25,.12)
+}
+.site .cta-content{max-width:570px;flex:1}
+.site .cta .kicker{color:#d6bc86;letter-spacing:.24em}
+.site .cta h2{max-width:540px;margin:18px 0;font-size:clamp(36px,4.8vw,62px);line-height:1.02}
+.site .cta p:not(.kicker){max-width:420px;color:#e0e3dc;font-size:12px;line-height:1.9}
+.site .cta-button{
+  position:relative;right:auto;bottom:auto;flex:0 0 auto;width:auto;height:auto;min-height:54px;
+  display:inline-flex;align-items:center;justify-content:center;gap:14px;
+  padding:16px 22px;border:1px solid #f1d9a7;border-radius:999px;
+  background:#f2d7a0;color:#202923;font-size:11px;font-weight:600;line-height:1.45;
+  text-align:left;white-space:nowrap;box-shadow:0 10px 28px #0003;transition:transform .25s,background .25s,box-shadow .25s
+}
+.site .cta-button:hover{transform:translateY(-3px);background:#ffe8b8;box-shadow:0 15px 32px #0004}
+.site .cta-button .cta-whatsapp-icon{flex:0 0 20px;width:20px;height:20px}
+@media(max-width:800px){
+  .site .cta{margin:30px 14px;padding:38px 24px;align-items:flex-start;flex-direction:column;gap:24px;border-radius:16px}
+  .site .cta h2{font-size:clamp(36px,8vw,48px)}
+  .site .cta-button{align-self:flex-start}
+}
+@media(max-width:520px){
+  .site .cta{margin:24px 12px;padding:32px 21px}
+  .site .cta .kicker{font-size:8px}
+  .site .cta p:not(.kicker){font-size:11px}
+  .site .cta-button{min-height:50px;padding:14px 18px}
+}
+</style>
 </head>
 <body class="intro-active">
 <script>(function(){var p=decodeURI(location.pathname).replace(/\/+$/,'')||'/';if(p!=='/'&&p!=='/index.html'){document.body.classList.remove('intro-active');document.body.classList.add('cms-mode');document.documentElement.classList.remove('intro-lock')}})();</script>
@@ -195,7 +241,7 @@ body.cms-mode *{animation-duration:0s!important;scroll-behavior:auto!important}
 <div class="brand"><div class="mark" id="mark">IM</div><p class="brand-name" id="brandName">NOME DA IMOBILIÁRIA</p><p class="tagline" id="tagline">IMÓVEIS • CONSULTORIA • CONFIANÇA</p></div>
 </div></div>
 <div class="site">
-<header class="site-header"><a class="logo" href="#inicio"><span class="logo-icon">⌂</span><span><strong id="headerName">NOME DA IMOBILIÁRIA</strong><small>IMÓVEIS COM INTENÇÃO</small></span></a><nav class="nav"><span class="nav-socials" aria-label="Redes sociais"><a class="nav-social instagram" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.5" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></a><a class="nav-social whatsapp" href="https://wa.me/5561000000000" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M20.1 11.4a8.1 8.1 0 0 1-12 7.1L3.5 20l1.6-4.4a8.1 8.1 0 1 1 15-4.2Z"/><path d="M8.4 8.2c.2-.3.4-.3.7-.3h.5c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.6.7c-.1.1-.1.3 0 .5.4.7 1.1 1.4 1.8 1.8.2.1.4.1.5 0l.7-.7c.2-.2.4-.2.6-.1l1.7.8c.2.1.3.3.2.5l-.2.7c-.1.3-.2.5-.5.7-.4.3-1 .4-1.5.2-1.1-.3-2.2-1-3.2-2-1-.9-1.7-2-2-3.1-.2-.6-.1-1.1.2-1.7Z" fill="currentColor" stroke="none"/></svg></a><span class="nav-phone">61 000000000</span></span><a class="active" href="#inicio">Home</a><a href="#imoveis">Imóveis</a><a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a class="nav-cta" href="#contato">Fale conosco ↗</a></nav><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></header>
+<header class="site-header"><a class="logo" href="#inicio"><span class="logo-icon">⌂</span><span><strong id="headerName">NOME DA IMOBILIÁRIA</strong><small>IMÓVEIS COM INTENÇÃO</small></span></a><nav class="nav"><span class="nav-socials" aria-label="Redes sociais"><a class="nav-social instagram" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.5" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></a><a class="nav-social whatsapp" href="https://wa.me/5561000000000" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M20.1 11.4a8.1 8.1 0 0 1-12 7.1L3.5 20l1.6-4.4a8.1 8.1 0 1 1 15-4.2Z"/><path d="M8.4 8.2c.2-.3.4-.3.7-.3h.5c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.6.7c-.1.1-.1.3 0 .5.4.7 1.1 1.4 1.8 1.8.2.1.4.1.5 0l.7-.7c.2-.2.4-.2.6-.1l1.7.8c.2.1.3.3.2.5l-.2.7c-.1.3-.2.5-.5.7-.4.3-1 .4-1.5.2-1.1-.3-2.2-1-3.2-2-1-.9-1.7-2-2-3.1-.2-.6-.1-1.1.2-1.7Z" fill="currentColor" stroke="none"/></svg></a><span class="nav-phone">61 000000000</span></span><a class="active" href="#inicio">Home</a><a href="#imoveis">Imóveis</a><a href="#sobre">Sobre</a><a class="nav-cta" href="#contato">Fale conosco ↗</a></nav><button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></header>
 <main>
 <section class="hero" id="inicio"><div class="hero-image"></div><div class="hero-content"><p class="eyebrow">O lugar certo para o seu próximo capítulo</p><h1>Um novo endereço.<br><em>Novas possibilidades.</em></h1><p class="hero-text">Encontre imóveis selecionados em Brasília com uma experiência mais simples, humana e sofisticada.</p><div class="hero-actions"><a class="explore" href="#imoveis">Explorar imóveis <span>↗</span></a><span class="circle-arrow">↓</span></div><div class="trusted"><div class="faces"><span class="face">01</span><span class="face">02</span><span class="face">03</span></div><span>Seleção cuidadosa para cada momento.</span></div></div><div class="hero-script">encontre<br>seu lugar</div><div class="slider"><span>01</span><span class="slider-line"></span><span>03</span><button>→</button></div></section>
 <section class="finder-wrap" aria-label="Buscar imóveis"><p class="finder-mobile-title">Encontre o seu imóvel</p><div class="finder" id="propertyFinder"><button class="finder-field" type="button" data-filter="purpose"><span class="finder-label">O que deseja?</span><span class="finder-value" id="purposeValue">Aluguel / Venda</span></button><button class="finder-field" type="button" data-filter="city"><span class="finder-label">Cidade</span><span class="finder-value" id="cityValue">Selecionar cidade</span></button><button class="finder-field" type="button" data-filter="neighborhood"><span class="finder-label">Bairro</span><span class="finder-value" id="neighborhoodValue">Selecionar bairro</span></button><button class="finder-field" type="button" data-filter="type"><span class="finder-label">Tipo de imóvel</span><span class="finder-value" id="typeValue">Todos os tipos</span></button><button class="finder-submit" type="button" id="searchProperties">Buscar imóveis ↗</button></div><div class="finder-result" id="finderResult"></div></section>
