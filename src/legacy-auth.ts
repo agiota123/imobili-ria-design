@@ -1,5 +1,4 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "./integrations/supabase/types";
 
 type Listing = {
   id: string;
@@ -67,7 +66,7 @@ const publishableKey =
   env["VITE_SUPABASE_ANON_KEY"]?.trim() ||
   "";
 
-let client: SupabaseClient<Database> | null = null;
+let client: SupabaseClient | null = null;
 if (enabled && projectUrl && publishableKey) {
   try {
     client = createClient<Database>(projectUrl, publishableKey, {
