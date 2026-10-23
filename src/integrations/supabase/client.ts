@@ -33,11 +33,6 @@ function createSupabaseFetch(supabaseUrl: string, supabaseKey: string): typeof f
     typeof window === "undefined" && typeof process !== "undefined"
       ? process.env["SUPABASE_URL"]?.replace(/\/+$/, "")
       : undefined;
-  const canRouteServer =
-    serverUrl &&
-    serverUrl !== publicUrl &&
-    typeof process !== "undefined" &&
-    process.env["SUPABASE_PUBLISHABLE_KEY"] === supabaseKey;
 
   return (input, init) => {
     const headers = new Headers(
@@ -54,7 +49,12 @@ function createSupabaseFetch(supabaseUrl: string, supabaseKey: string): typeof f
     }
     headers.set("apikey", supabaseKey);
 
-    if (canRouteServer) {
+    if (
+      serverUrl &&
+      serverUrl !== publicUrl &&
+      typeof process !== "undefined" &&
+      process.env["SUPABASE_PUBLISHABLE_KEY"] === supabaseKey
+    ) {
       const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
       if (url.startsWith(publicUrl + "/")) {
         const target = serverUrl + url.slice(publicUrl.length);
