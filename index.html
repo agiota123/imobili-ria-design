@@ -45,6 +45,13 @@ footer{padding:45px clamp(24px,5vw,80px) 25px;background:var(--dark);color:#e8e8
 @media(prefers-reduced-motion:reduce){.house-scene,.light-beam,.brand{animation:none!important;opacity:1!important;filter:none!important}.light-beam{display:none}}
 
 </style>
+<style id="footer-end-fix">
+/* No site público, o container vazio do painel não deve criar uma segunda tela após o rodapé. */
+#cms-root:empty{display:none!important;min-height:0!important;height:0!important;margin:0!important;padding:0!important}
+body:not(.cms-mode) .site{min-height:0!important;margin-bottom:0!important;padding-bottom:0!important}
+body:not(.cms-mode) .site>footer{margin-bottom:0!important}
+html,body{overscroll-behavior-y:none}
+</style>
 <style id="soft-corners-style">
 /* Refinamento global: cantos mais suaves, sem alterar a identidade visual */
 :root{--radius-sm:8px;--radius-md:13px;--radius-lg:18px;--radius-xl:24px}
