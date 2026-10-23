@@ -92,6 +92,17 @@ footer{padding:45px clamp(24px,5vw,80px) 25px;background:var(--dark);color:#e8e8
 @media(max-width:360px){.auth-page{padding:10px}.auth-card{border-radius:17px}.auth-visual{min-height:170px}.auth-copy h2{font-size:25px}.auth-wordmark-icon{width:34px;height:34px}.auth-wordmark b{font-size:19px}.auth-form-panel{padding:24px 16px}}
 @media(prefers-reduced-motion:reduce){.auth-field input,.auth-submit{transition:none}}
 
+
+/* Minimal rounded admin login */
+.auth-page{min-height:100dvh;display:grid;place-items:center;padding:24px;background:var(--dark);color:var(--ink)}
+.admin-simple{width:min(100%,360px);padding:34px;border:1px solid #d9d5cb;border-radius:24px;background:var(--paper);box-shadow:0 24px 70px #0002}
+.admin-simple h1{margin:0 0 28px;text-align:center;font:500 25px 'Playfair Display',serif;letter-spacing:.16em;color:var(--dark)}
+.admin-simple form{display:grid;gap:10px}
+.admin-simple label{margin-top:8px;font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--ink)}
+.admin-simple input{width:100%;min-width:0;padding:14px 16px;border:1px solid var(--line);border-radius:14px;outline:none;background:#fff;font:12px 'DM Sans',sans-serif;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.admin-simple input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #b89a6920}
+.admin-simple button{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px;padding:14px 18px;border:0;border-radius:99px;background:var(--dark);color:var(--cream);font:600 10px 'DM Sans',sans-serif;letter-spacing:.14em;cursor:pointer;transition:transform .2s,background .2s}
+.admin-simple button:hover{transform:translateY(-1px);background:#263a33}
 </style>
 <style id="mobile-menu-visibility-fix">
 @media(max-width:520px){
@@ -616,23 +627,15 @@ function authPageBase(content){document.body.classList.add('cms-mode');document.
 function showAuthMessage(message,type){const node=document.getElementById('auth-message');if(!node)return;node.textContent=message;node.className='auth-message show '+type}
 function loginPage(){
   let mode='login',email='',password='';
-  const configured=false;
-  authPageBase('<div class="auth-page"><header class="auth-header"><a class="auth-wordmark" href="/"><span class="auth-wordmark-icon">M</span><span><b>NOME DA IMOBILIÁRIA</b><small>IMOBILIÁRIA</small></span></a><a href="/" class="auth-back">← <span>Voltar ao site</span></a></header><main class="auth-main"><section class="auth-card"><div class="auth-visual"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=90" alt="Casa contemporânea com jardim"><div class="auth-seal">◇ &nbsp; ACESSO ADMINISTRATIVO</div><div class="auth-copy"><p class="auth-kicker">CUIDADO EM CADA DETALHE</p><h2>Boas escolhas começam com cuidado.</h2><p>Um espaço reservado para organizar seus imóveis, atualizar anúncios e acompanhar cada detalhe.</p></div></div><div class="auth-form-panel"><form class="auth-form" id="auth-form"><div class="auth-lock">⌑</div><div><p class="auth-kicker">ÁREA DO PROPRIETÁRIO</p><h1 id="auth-title">Bem-vindo de volta.</h1><p class="auth-intro" id="auth-intro">Entre para gerenciar seus imóveis e manter seus anúncios sempre atualizados.</p></div><div class="auth-fields"><label class="auth-field">E-mail<div><input id="auth-email" type="email" required autocomplete="email" maxlength="254" placeholder="voce@empresa.com.br"></div></label><div id="auth-password-group"><div class="auth-row"><label class="auth-field" for="auth-password">Senha</label><button type="button" id="auth-forgot" class="auth-text-btn">Esqueci minha senha</button></div><div class="auth-password-wrap"><input id="auth-password" type="password" required autocomplete="current-password" placeholder="Digite sua senha"><button class="auth-toggle" type="button" id="auth-toggle" aria-label="Mostrar senha">◉</button></div></div></div><div id="auth-message" class="auth-message" role="status" aria-live="polite"></div>'+(configured?'':'<div class="auth-message show notice">Prévia visual: conecte o Supabase e aplique a migração segura para ativar login e banco de dados neste ambiente.</div>')+'<button id="auth-submit" class="auth-submit" type="submit">Entrar no painel <span>↗</span></button><button id="auth-back-login" type="button" class="auth-text-btn" style="display:none">Voltar ao login</button><div class="auth-divider">◇ &nbsp; Acesso restrito a usuários autorizados</div></form></div></section></main><footer class="auth-footer"><span>© 2026 NOME DA IMOBILIÁRIA</span><span>Privacidade e segurança em cada acesso</span></footer></div>');
-  const emailField=document.getElementById('auth-email'),passwordField=document.getElementById('auth-password'),passwordGroup=document.getElementById('auth-password-group'),submit=document.getElementById('auth-submit'),title=document.getElementById('auth-title'),intro=document.getElementById('auth-intro'),back=document.getElementById('auth-back-login');
+  authPageBase('<div class="auth-page"><main class="admin-simple"><h1>ADMIN</h1><form id="auth-form"><label for="auth-email">USUÁRIO</label><input id="auth-email" type="text" required autocomplete="username" placeholder="Digite seu usuário"><label for="auth-password">SENHA</label><input id="auth-password" type="password" required autocomplete="current-password" placeholder="Digite sua senha"><div id="auth-message" class="auth-message" role="status" aria-live="polite"></div><button id="auth-submit" type="submit">ENTRAR <span>↗</span></button></form></main></div>');
+  const emailField=document.getElementById('auth-email'),passwordField=document.getElementById('auth-password'),submit=document.getElementById('auth-submit');
   if(new URLSearchParams(location.search).get('erro')==='sem-acesso')showAuthMessage('Esta conta não tem permissão para acessar o painel.','error');
-  function setMode(next){mode=next;title.textContent=mode==='login'?'Bem-vindo de volta.':'Recupere seu acesso.';intro.textContent=mode==='login'?'Entre para gerenciar seus imóveis e manter seus anúncios sempre atualizados.':'Informe seu e-mail e enviaremos as instruções para redefinir sua senha.';passwordGroup.style.display=mode==='login'?'block':'none';passwordField.required=mode==='login';submit.innerHTML=mode==='login'?'Entrar no painel <span>↗</span>':'Enviar instruções <span>↗</span>';back.style.display=mode==='login'?'none':'inline-flex';document.getElementById('auth-message').className='auth-message';}
-  document.getElementById('auth-forgot').onclick=()=>setMode('forgot');
-  back.onclick=()=>setMode('login');
-  document.getElementById('auth-toggle').onclick=()=>{passwordField.type=passwordField.type==='password'?'text':'password';document.getElementById('auth-toggle').setAttribute('aria-label',passwordField.type==='password'?'Mostrar senha':'Ocultar senha')};
   const existing=window.MoradaBackend;
   if(existing&&existing.configured){existing.verifyAdmin().then(result=>{if(result.authorized)location.replace('/admin')}).catch(()=>{});}
   document.getElementById('auth-form').onsubmit=async function(event){
-    event.preventDefault();email=emailField.value.trim();password=passwordField.value;submit.disabled=true;submit.textContent=mode==='login'?'Verificando acesso...':'Enviando...';document.getElementById('auth-message').className='auth-message';
-    try{
-      if(mode==='login'){sessionStorage.setItem('morada-admin-frontend-session','1');sessionStorage.setItem('morada-admin-frontend-email',email);window.__MORADA_ADMIN_AUTHORIZED__=true;window.__MORADA_ADMIN_EMAIL__=email;location.assign('/admin');return}
-      showAuthMessage('A recuperação de senha será ativada quando conectarmos o backend.','notice');
-    }catch(error){if(error&&error.message==='sem-acesso')showAuthMessage('Esta conta não possui permissão para acessar o painel.','error');else if(mode==='forgot')showAuthMessage('Se houver uma conta vinculada a esse e-mail, enviaremos as instruções de recuperação.','success');else showAuthMessage('Não foi possível entrar. Confira os dados e tente novamente.','error')}
-    finally{submit.disabled=false;submit.innerHTML=mode==='login'?'Entrar no painel <span>↗</span>':'Enviar instruções <span>↗</span>'}
+    event.preventDefault();email=emailField.value.trim();password=passwordField.value;submit.disabled=true;submit.textContent='ENTRANDO...';document.getElementById('auth-message').className='auth-message';
+    try{sessionStorage.setItem('morada-admin-frontend-session','1');sessionStorage.setItem('morada-admin-frontend-email',email);window.__MORADA_ADMIN_AUTHORIZED__=true;window.__MORADA_ADMIN_EMAIL__=email;location.assign('/admin');}
+    catch(error){showAuthMessage('Não foi possível entrar. Tente novamente.','error');submit.disabled=false;submit.innerHTML='ENTRAR <span>↗</span>'}
   };
 }
 function resetPasswordPage(){
