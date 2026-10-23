@@ -289,6 +289,13 @@ body.cms-mode *{animation-duration:0s!important;scroll-behavior:auto!important}
 })();
 </script>
 
+
+<style id="cms-mobile-table-scroll-fix">
+/* No celular, mantenha a tabela de imóveis deslizando horizontalmente para alcançar as ações. */
+#cms-root .cms-table-wrap{overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
+#cms-root .cms-table{touch-action:pan-x pan-y}
+@media(max-width:700px){#cms-root .cms-table-wrap{max-width:100%;overscroll-behavior:contain}#cms-root .cms-table th,#cms-root .cms-table td{white-space:normal}}
+</style>
 </head>
 <body class="intro-active">
 <script>(function(){var p=decodeURI(location.pathname).replace(/\/+$/,'')||'/';if(p!=='/'&&p!=='/index.html'){document.body.classList.remove('intro-active');document.body.classList.add('cms-mode');document.documentElement.classList.remove('intro-lock')}})();</script>
