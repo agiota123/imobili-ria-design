@@ -69,7 +69,7 @@ const publishableKey =
 let client: SupabaseClient | null = null;
 if (enabled && projectUrl && publishableKey) {
   try {
-    client = createClient<Database>(projectUrl, publishableKey, {
+    client = createClient(projectUrl, publishableKey, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
@@ -282,7 +282,7 @@ const backend: MoradaBackendApi = {
       const id = String(item.id);
       const old = isUuid(id) ? oldById.get(id) : undefined;
       const body = toRow(item, tenantId);
-      if (old && JSON.stringify(toRow(old)) === JSON.stringify(body)) continue;
+      if (old && JSON.stringify(toRow(old, tenantId)) === JSON.stringify(body)) continue;
 
       const result = old
         ? await supabase.from("properties").update(body as any).eq("id", id).eq("tenant_id" as any, tenantId)
