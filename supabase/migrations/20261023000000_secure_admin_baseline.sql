@@ -128,7 +128,8 @@ GRANT SELECT ON public.public_properties TO anon, authenticated;
 
 CREATE INDEX IF NOT EXISTS properties_published_created_at_idx
   ON public.properties (published, created_at DESC);
-CREATE UNIQUE INDEX IF NOT EXISTS properties_slug_unique ON public.properties (slug);
+DROP INDEX IF EXISTS public.properties_slug_unique;
+CREATE INDEX IF NOT EXISTS properties_slug_idx ON public.properties (slug);
 
 CREATE OR REPLACE FUNCTION public.touch_updated_at()
 RETURNS trigger LANGUAGE plpgsql SET search_path = ''
