@@ -653,7 +653,14 @@ function renderAdminRoute(){if(path==='/admin'||path==='/admin/index.html')dashb
 // Conexão real de autenticação, banco de imóveis e armazenamento de imagens.
 const MORADA_SUPABASE_URL='https://embixorenxbjjzzwihqk.supabase.co';
 const MORADA_SUPABASE_KEY='sb_publishable_Ab0V4lfnH8YdtxXkSiWLpA_QVp3_0H3';
-const moradaClient=createClient(MORADA_SUPABASE_URL,MORADA_SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const moradaFetch=(input,init)=>{
+  const headers=new Headers(typeof Request!=='undefined'&&input instanceof Request?input.headers:undefined);
+  if(init&&init.headers)new Headers(init.headers).forEach((value,key)=>headers.set(key,value));
+  if(MORADA_SUPABASE_KEY.startsWith('sb_publishable_')&&headers.get('Authorization')==='Bearer '+MORADA_SUPABASE_KEY)headers.delete('Authorization');
+  headers.set('apikey',MORADA_SUPABASE_KEY);
+  return fetch(input,{...init,headers});
+};
+const moradaClient=createClient(MORADA_SUPABASE_URL,MORADA_SUPABASE_KEY,{global:{fetch:moradaFetch},auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 function moradaFromRow(r){
   return {id:String(r.id),slug:r.slug||slug(r.title||'imovel'),title:r.title||'',code:r.code||'',type:r.type||'Casa',purpose:r.purpose||'Venda',price:Number(r.price)||0,condo:Number(r.condo)||0,iptu:Number(r.iptu)||0,description:r.description||'',state:r.state||'',city:r.city||'',neighborhood:r.neighborhood||'',address:r.address||'',number:r.number||'',zip:r.zip||'',complement:r.complement||'',area:Number(r.area)||0,builtArea:Number(r.built_area)||0,bedrooms:Number(r.bedrooms)||0,suites:Number(r.suites)||0,bathrooms:Number(r.bathrooms)||0,parking:Number(r.parking)||0,features:Array.isArray(r.features)?r.features:[],published:r.published!==false,featured:!!r.featured,status:r.status||'Disponível',images:Array.isArray(r.images)?r.images:[],createdAt:String(r.created_at||new Date().toISOString()).slice(0,10)};
 }
