@@ -45,6 +45,44 @@ footer{padding:45px clamp(24px,5vw,80px) 25px;background:var(--dark);color:#e8e8
 @media(prefers-reduced-motion:reduce){.house-scene,.light-beam,.brand{animation:none!important;opacity:1!important;filter:none!important}.light-beam{display:none}}
 
 </style>
+<style id="soft-corners-style">
+/* Refinamento global: cantos mais suaves, sem alterar a identidade visual */
+:root{--radius-sm:8px;--radius-md:13px;--radius-lg:18px;--radius-xl:24px}
+.site-header .logo-icon{border-radius:9px}
+.finder{border-radius:18px;overflow:hidden}
+.finder-field:first-child{border-top-left-radius:18px;border-bottom-left-radius:18px}
+.finder-submit{border-radius:11px}
+.property,.property-card,.property-grid .property{border-radius:16px;overflow:hidden}
+.property img,.property-image,.property-photo{border-radius:12px}
+.property .badge,.badge{border-radius:999px}
+.site button,.site input,.site select,.site textarea{border-radius:10px}
+.site .explore,.site .nav-cta{border-radius:999px}
+.site .slider button,.site .circle-arrow,.site .face,.site .nav-social{border-radius:50%}
+.site .site-header{overflow:hidden}
+.site .hero-image{border-radius:0}
+.site .section,.site section{scroll-margin-top:24px}
+#cms-root .cms-brand-mark{border-radius:10px}
+#cms-root .cms-nav a{border-radius:10px}
+#cms-root .cms-top{border-radius:0 0 14px 14px}
+#cms-root .cms-stat,#cms-root .cms-panel,#cms-root .cms-card,#cms-root .cms-recent,
+#cms-root .cms-form-section,#cms-root .cms-table-wrap,#cms-root .cms-empty,
+#cms-root .cms-detail-card,#cms-root .cms-contact,#cms-root .cms-gallery,
+#cms-root .cms-image,#cms-root .cms-settings-card{border-radius:16px;overflow:hidden}
+#cms-root .cms-btn{border-radius:10px}
+#cms-root .cms-btn.primary{border-radius:11px}
+#cms-root .cms-search,#cms-root .cms-filter-row select,
+#cms-root .cms-field input,#cms-root .cms-field select,#cms-root .cms-field textarea,
+#cms-root .cms-image-add input{border-radius:10px}
+#cms-root .cms-badge,#cms-root .cms-status,#cms-root .cms-tag{border-radius:999px}
+#cms-root .cms-image img,#cms-root .cms-gallery-main img,#cms-root .cms-thumbs img{border-radius:10px}
+#cms-root .cms-gallery-main{overflow:hidden;border-radius:16px}
+#cms-root .cms-not-found a{border-radius:10px}
+@media(max-width:700px){
+ .finder{border-radius:15px}
+ .finder-field:first-child{border-radius:0}
+ #cms-root .cms-stat,#cms-root .cms-panel,#cms-root .cms-form-section{border-radius:13px}
+}
+</style>
 <style id="cms-style">
 body.cms-mode{background:var(--cream)}body.cms-mode .site,body.cms-mode .intro{display:none!important}body.cms-mode{overflow:auto!important}
 #cms-root{min-height:100vh;color:var(--ink);font-family:'DM Sans',sans-serif}#cms-root *{box-sizing:border-box}#cms-root a{color:inherit;text-decoration:none}#cms-root button,#cms-root input,#cms-root select,#cms-root textarea{font:inherit}#cms-root button{cursor:pointer}#cms-root img{max-width:100%;display:block}
