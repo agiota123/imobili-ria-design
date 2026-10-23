@@ -725,9 +725,15 @@ function loginPage(){
   authPageBase('<div class="auth-page admin-login-page"><main class="admin-simple"><h1>ADMIN</h1><form id="auth-form"><label for="auth-email">USUÁRIO</label><input id="auth-email" name="email" type="email" required autocomplete="username" placeholder="Digite seu usuário ou e-mail"><label for="auth-password">SENHA</label><div class="admin-password-wrap"><input id="auth-password" name="password" type="password" required autocomplete="current-password" placeholder="Digite sua senha"><button class="admin-show-password" id="toggle-password" type="button" aria-label="Mostrar senha">Mostrar</button></div><label class="remember-option" for="remember-me"><input id="remember-me" type="checkbox"><span class="remember-check" aria-hidden="true"></span><span>Lembre de mim</span></label><div id="auth-message" class="auth-message" role="status" aria-live="polite"></div><button id="auth-submit" class="admin-login-submit" type="submit">ENTRAR</button></form></main></div>');
   const form=document.getElementById('auth-form'),emailField=document.getElementById('auth-email'),passwordField=document.getElementById('auth-password'),submit=document.getElementById('auth-submit'),toggle=document.getElementById('toggle-password'),remember=document.getElementById('remember-me');
   remember.checked=localStorage.getItem('morada-remember-session')==='1';
-  remember.addEventListener('change',()=>{window.__MORADA_REMEMBER_ME__=remember.checked;if(!remember.checked){localStorage.removeItem('morada-remember-session');}});
+  window.__MORADA_REMEMBER_ME__=remember.checked;
+  remember.addEventListener('change',async()=>{
+    window.__MORADA_REMEMBER_ME__=remember.checked;
+    if(!remember.checked){
+      try{await window.MoradaBackend.signOut();}catch(e){}
+      try{localStorage.removeItem('morada-remember-session');}catch(e){}
+    }
+  });
   if(new URLSearchParams(location.search).get('erro')==='sem-acesso')showAuthMessage('Esta conta não tem permissão de administrador.','error');
-  window.MoradaBackend.verifyAdmin().then(result=>{if(result.authorized)location.replace('/admin')}).catch(()=>{});
   toggle.onclick=()=>{const show=passwordField.type==='password';passwordField.type=show?'text':'password';toggle.textContent=show?'Ocultar':'Mostrar';toggle.setAttribute('aria-label',show?'Ocultar senha':'Mostrar senha')};
   form.onsubmit=async function(event){
     event.preventDefault();window.__MORADA_REMEMBER_ME__=remember.checked;submit.disabled=true;submit.textContent='VERIFICANDO…';
