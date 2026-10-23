@@ -22,12 +22,13 @@ If no row is inserted, confirm the account already exists under Authentication >
 
 Use .env.example for local development. In Vercel, add these variables for the desired environment and redeploy:
 
+- VITE_SUPABASE_ENABLED=true
 - VITE_SUPABASE_URL
 - VITE_SUPABASE_PUBLISHABLE_KEY
 - SUPABASE_URL
 - SUPABASE_PUBLISHABLE_KEY
 
-Set them to the matching customer's own project. The publishable/anon key may be in the browser because access is enforced by RLS; it is not an admin password.
+Set VITE_SUPABASE_ENABLED=true only after the customer's database has been created and secured; set the remaining values to that same customer's project. The publishable/anon key may be in the browser because access is enforced by RLS; it is not an admin password.
 
 Never expose SUPABASE_SERVICE_ROLE_KEY in the frontend or a VITE_ variable. This template does not need that key for its browser data flow.
 
