@@ -45,6 +45,15 @@ footer{padding:45px clamp(24px,5vw,80px) 25px;background:var(--dark);color:#e8e8
 @media(prefers-reduced-motion:reduce){.house-scene,.light-beam,.brand{animation:none!important;opacity:1!important;filter:none!important}.light-beam{display:none}}
 
 </style>
+<style id="mobile-menu-visibility-fix">
+@media(max-width:520px){
+  .site-header{position:relative!important;z-index:1000!important;overflow:visible!important}
+  .site-header .mobile-menu-toggle{position:relative!important;z-index:1002!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  .site-header .nav.menu-open{display:flex!important;position:absolute!important;top:100%!important;left:0!important;right:0!important;width:100%!important;height:auto!important;max-height:calc(100dvh - 76px)!important;overflow-y:auto!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:1001!important;background:#202923!important}
+  .site-header .nav.menu-open>a{display:flex!important;visibility:visible!important;opacity:1!important;color:#f4f1e8!important}
+  .site-header .nav.menu-open>a.nav-cta{display:inline-flex!important}
+}
+</style>
 <style id="footer-end-fix">.temporary-admin-access{color:#b8a27a;font-size:9px;text-decoration:none;border:1px solid #b8a27a55;border-radius:999px;padding:8px 12px;white-space:nowrap;transition:background .2s,color .2s}.temporary-admin-access:hover{background:#b8a27a18;color:#e0c99b}@media(max-width:640px){.footer-bottom{flex-wrap:wrap;gap:12px}.temporary-admin-access{order:3}}
 /* No site público, o container vazio do painel não deve criar uma segunda tela após o rodapé. */
 #cms-root:empty{display:none!important;min-height:0!important;height:0!important;margin:0!important;padding:0!important}
