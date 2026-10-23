@@ -565,6 +565,7 @@ const navLinks=[...document.querySelectorAll('.nav a[href^="#"]')].filter(a=>a.h
 }
 </style>
 <script id="cms-script" type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 (function(){
 const root=document.getElementById('cms-root'),storeKey='morada-properties-demo-v1';
 const photo=id=>'https://images.unsplash.com/'+id+'?auto=format&fit=crop&w=1200&q=85';
@@ -626,16 +627,22 @@ const path=decodeURI(location.pathname).replace(/\/+$/,'')||'/';
 function authPageBase(content){document.body.classList.add('cms-mode');document.getElementById('intro')?.classList.add('done');document.documentElement.classList.remove('intro-lock');root.innerHTML=content}
 function showAuthMessage(message,type){const node=document.getElementById('auth-message');if(!node)return;node.textContent=message;node.className='auth-message show '+type}
 function loginPage(){
-  let mode='login',email='',password='';
-  authPageBase('<div class="auth-page"><main class="admin-simple"><h1>ADMIN</h1><form id="auth-form"><label for="auth-email">USUÁRIO</label><input id="auth-email" type="text" required autocomplete="username" placeholder="Digite seu usuário"><label for="auth-password">SENHA</label><input id="auth-password" type="password" required autocomplete="current-password" placeholder="Digite sua senha"><div id="auth-message" class="auth-message" role="status" aria-live="polite"></div><button id="auth-submit" type="submit">ENTRAR <span>↗</span></button></form></main></div>');
-  const emailField=document.getElementById('auth-email'),passwordField=document.getElementById('auth-password'),submit=document.getElementById('auth-submit');
-  if(new URLSearchParams(location.search).get('erro')==='sem-acesso')showAuthMessage('Esta conta não tem permissão para acessar o painel.','error');
-  const existing=window.MoradaBackend;
-  if(existing&&existing.configured){existing.verifyAdmin().then(result=>{if(result.authorized)location.replace('/admin')}).catch(()=>{});}
-  document.getElementById('auth-form').onsubmit=async function(event){
-    event.preventDefault();email=emailField.value.trim();password=passwordField.value;submit.disabled=true;submit.textContent='ENTRANDO...';document.getElementById('auth-message').className='auth-message';
-    try{sessionStorage.setItem('morada-admin-frontend-session','1');sessionStorage.setItem('morada-admin-frontend-email',email);window.__MORADA_ADMIN_AUTHORIZED__=true;window.__MORADA_ADMIN_EMAIL__=email;location.assign('/admin');}
-    catch(error){showAuthMessage('Não foi possível entrar. Tente novamente.','error');submit.disabled=false;submit.innerHTML='ENTRAR <span>↗</span>'}
+  authPageBase('<div class="auth-page"><header class="auth-header"><a class="auth-wordmark" href="/"><span class="auth-wordmark-icon">M</span><span><b>NOME DA IMOBILIÁRIA</b><small>IMOBILIÁRIA</small></span></a><a href="/" class="auth-back">← Voltar ao site</a></header><main class="auth-main"><section class="auth-card"><div class="auth-visual"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=90" alt="Casa contemporânea"><div class="auth-seal">MORADA · ACESSO SEGURO</div><div class="auth-copy"><p class="auth-kicker">ESPAÇO DE GESTÃO</p><h2>Seu catálogo,<br>do seu jeito.</h2><p>Organize seus imóveis, atualize anúncios e cuide de cada detalhe em um único lugar.</p></div></div><div class="auth-form-panel"><form class="auth-form" id="auth-form"><div class="auth-lock">⌑</div><div><p class="auth-kicker">ÁREA DO PROPRIETÁRIO</p><h1>Bem-vindo de volta.</h1><p class="auth-intro">Entre para gerenciar os imóveis da imobiliária.</p></div><div class="auth-fields"><label class="auth-field" for="auth-email">E-mail<input id="auth-email" name="email" type="email" required autocomplete="username" placeholder="voce@exemplo.com"></label><label class="auth-field" for="auth-password">Senha<input id="auth-password" name="password" type="password" required autocomplete="current-password" placeholder="Digite sua senha"></label></div><div id="auth-message" class="auth-message" role="status" aria-live="polite"></div><div class="auth-row"><button type="button" class="auth-text-btn" id="auth-forgot">Esqueci minha senha</button><span class="auth-hint">Acesso restrito</span></div><button id="auth-submit" class="auth-submit" type="submit">Entrar no painel <span>↗</span></button><div class="auth-footer"><span>© 2026 NOME DA IMOBILIÁRIA</span><span>Autenticação protegida</span></div></form></div></section></main></div>');
+  const form=document.getElementById('auth-form'),emailField=document.getElementById('auth-email'),passwordField=document.getElementById('auth-password'),submit=document.getElementById('auth-submit'),forgot=document.getElementById('auth-forgot');
+  if(new URLSearchParams(location.search).get('erro')==='sem-acesso')showAuthMessage('A conta foi autenticada, mas não possui a permissão de administrador.','error');
+  window.MoradaBackend.verifyAdmin().then(result=>{if(result.authorized)location.replace('/admin')}).catch(()=>{});
+  form.onsubmit=async function(event){
+    event.preventDefault();submit.disabled=true;submit.textContent='VERIFICANDO ACESSO…';
+    try{await window.MoradaBackend.signIn(emailField.value.trim(),passwordField.value);location.replace('/admin')}
+    catch(error){showAuthMessage(error&&error.message?error.message:'Não foi possível entrar. Confira os dados e tente novamente.','error');submit.disabled=false;submit.innerHTML='Entrar no painel <span>↗</span>'}
+  };
+  forgot.onclick=async function(){
+    const email=emailField.value.trim();
+    if(!email){showAuthMessage('Digite seu e-mail para receber as instruções de recuperação.','notice');emailField.focus();return}
+    forgot.disabled=true;
+    try{await window.MoradaBackend.resetPassword(email,location.origin+'/reset-password');showAuthMessage('Se houver uma conta vinculada a esse e-mail, as instruções de recuperação serão enviadas.','success')}
+    catch(error){showAuthMessage(error&&error.message?error.message:'Não foi possível solicitar a recuperação agora.','error')}
+    finally{forgot.disabled=false}
   };
 }
 function resetPasswordPage(){
@@ -643,6 +650,80 @@ function resetPasswordPage(){
   document.getElementById('reset-form').onsubmit=async function(event){event.preventDefault();const p=document.getElementById('reset-password').value,c=document.getElementById('reset-confirm').value,button=document.getElementById('reset-submit');if(p!==c){showAuthMessage('As senhas não coincidem.','error');return}if(!window.MoradaBackend||!window.MoradaBackend.configured){showAuthMessage('A autenticação ainda não está configurada neste ambiente.','notice');return}button.disabled=true;button.textContent='Salvando...';try{await window.MoradaBackend.updatePassword(p);showAuthMessage('Senha atualizada. Redirecionando para o painel...','success');setTimeout(()=>location.replace('/admin'),500)}catch(error){showAuthMessage(error&&error.message?error.message:'Não foi possível atualizar a senha.','error')}finally{button.disabled=false;button.innerHTML='Atualizar senha <span>↗</span>'}}
 }
 function renderAdminRoute(){if(path==='/admin'||path==='/admin/index.html')dashboard();else if(path==='/admin/imoveis')propertyList();else if(path==='/admin/imoveis/novo')editForm(null);else if(path==='/admin/configuracoes'){el(cmsShell('Configurações','Preferências do ambiente de gestão.','settings','<section class="cms-panel"><h2>Armazenamento e banco de dados</h2><p class="cms-subtitle">Os imóveis e as permissões são gerenciados no projeto Supabase desta empresa. As alterações são validadas pelas políticas RLS do banco.</p><span class="cms-pill">Supabase configurado</span></section><section class="cms-panel" style="margin-top:14px"><h2>Autenticação e acesso</h2><p class="cms-subtitle">Acesso por e-mail e senha; somente contas atribuídas ao papel admin podem alterar imóveis. Cadastro público não concede privilégios administrativos.</p><span class="cms-pill">Papel admin verificado</span></section><div class="cms-note">Use um projeto Supabase independente por imobiliária. Nunca compartilhe chaves privadas ou uma chave service-role no código do navegador.</div>'))}else{const m=path.match(/^\/admin\/imoveis\/([^/]+)\/editar$/);if(m)editForm(m[1]);else dashboard()}}
+// Conexão real de autenticação, banco de imóveis e armazenamento de imagens.
+const MORADA_SUPABASE_URL='https://embixorenxbjjzzwihqk.supabase.co';
+const MORADA_SUPABASE_KEY='sb_publishable_Ab0V4lfnH8YdtxXkSiWLpA_QVp3_0H3';
+const moradaClient=createClient(MORADA_SUPABASE_URL,MORADA_SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+function moradaFromRow(r){
+  return {id:String(r.id),slug:r.slug||slug(r.title||'imovel'),title:r.title||'',code:r.code||'',type:r.type||'Casa',purpose:r.purpose||'Venda',price:Number(r.price)||0,condo:Number(r.condo)||0,iptu:Number(r.iptu)||0,description:r.description||'',state:r.state||'',city:r.city||'',neighborhood:r.neighborhood||'',address:r.address||'',number:r.number||'',zip:r.zip||'',complement:r.complement||'',area:Number(r.area)||0,builtArea:Number(r.built_area)||0,bedrooms:Number(r.bedrooms)||0,suites:Number(r.suites)||0,bathrooms:Number(r.bathrooms)||0,parking:Number(r.parking)||0,features:Array.isArray(r.features)?r.features:[],published:r.published!==false,featured:!!r.featured,status:r.status||'Disponível',images:Array.isArray(r.images)?r.images:[],createdAt:String(r.created_at||new Date().toISOString()).slice(0,10)};
+}
+function moradaToRow(p){
+  return {slug:slug(p.title||'imovel'),title:p.title||'',code:p.code||'',type:p.type||'Casa',purpose:p.purpose||'Venda',price:Number(p.price)||0,condo:Number(p.condo)||0,iptu:Number(p.iptu)||0,description:p.description||'',state:p.state||'',city:p.city||'',neighborhood:p.neighborhood||'',address:p.address||'',number:p.number||'',zip:p.zip||'',complement:p.complement||'',area:Number(p.area)||0,built_area:Number(p.builtArea)||0,bedrooms:Number(p.bedrooms)||0,suites:Number(p.suites)||0,bathrooms:Number(p.bathrooms)||0,parking:Number(p.parking)||0,features:Array.isArray(p.features)?p.features:[],published:!!p.published,featured:!!p.featured,status:p.status||'Disponível',images:Array.isArray(p.images)?p.images:[]};
+}
+window.MoradaBackend={
+  configured:true,
+  async verifyAdmin(){
+    const {data,error}=await moradaClient.auth.getUser(),user=data&&data.user;
+    if(error||!user)return {authorized:false,user:null};
+    const {data:role,error:roleError}=await moradaClient.from('user_roles').select('role').eq('user_id',user.id).eq('role','admin').maybeSingle();
+    return {authorized:!roleError&&!!role,user};
+  },
+  async signIn(email,password){
+    const {error}=await moradaClient.auth.signInWithPassword({email:email.trim(),password});
+    if(error)throw new Error('E-mail ou senha incorretos. Confira seus dados e tente novamente.');
+    const result=await this.verifyAdmin();
+    if(!result.authorized){await moradaClient.auth.signOut();throw new Error('Login válido, mas esta conta não tem permissão de administrador.');}
+    return result;
+  },
+  async signOut(){await moradaClient.auth.signOut()},
+  async resetPassword(email,redirectTo){
+    const {error}=await moradaClient.auth.resetPasswordForEmail(email.trim(),{redirectTo});
+    if(error)throw new Error('Não foi possível solicitar a recuperação de senha. Confira as configurações de redirecionamento do Supabase.');
+  },
+  async updatePassword(password){
+    const {data,error}=await moradaClient.auth.updateUser({password});
+    if(error||!data.user)throw new Error('Não foi possível atualizar a senha. Abra o link de recuperação enviado por e-mail e tente novamente.');
+  },
+  async getProperties(admin=false){
+    if(admin){const auth=await this.verifyAdmin();if(!auth.authorized)throw new Error('Sua sessão de administrador expirou. Entre novamente.');}
+    const {data,error}=await moradaClient.from(admin?'properties':'public_properties').select('*').order('created_at',{ascending:false});
+    if(error)throw new Error('Falha ao carregar imóveis do banco: '+error.message);
+    return (data||[]).map(moradaFromRow);
+  },
+  async replaceProperties(previous,next){
+    const auth=await this.verifyAdmin();
+    if(!auth.authorized)throw new Error('Sua sessão de administrador expirou. Entre novamente.');
+    const previousById=new Map(previous.map(p=>[String(p.id),p])),nextIds=new Set(next.map(p=>String(p.id)));
+    for(const old of previous){if(!nextIds.has(String(old.id))){const {error}=await moradaClient.from('properties').delete().eq('id',old.id);if(error)throw new Error('Não foi possível excluir o imóvel: '+error.message);}}
+    const savedById=new Map();
+    for(const item of next){
+      let row,error;
+      if(previousById.has(String(item.id))){
+        const result=await moradaClient.from('properties').update(moradaToRow(item)).eq('id',item.id).select('*').single();row=result.data;error=result.error;
+      }else{
+        const result=await moradaClient.from('properties').insert(moradaToRow(item)).select('*').single();row=result.data;error=result.error;
+      }
+      if(error||!row)throw new Error('Não foi possível salvar o imóvel. Confira as permissões do banco'+(error?': '+error.message:'.'));
+      savedById.set(String(item.id),moradaFromRow(row));
+    }
+    return next.map(item=>savedById.get(String(item.id))||item);
+  },
+  async uploadImages(files){
+    const auth=await this.verifyAdmin();
+    if(!auth.authorized)throw new Error('Entre com uma conta de administrador antes de enviar imagens.');
+    const urls=[];
+    for(const file of files){
+      if(!['image/jpeg','image/png','image/webp','image/avif'].includes(file.type))throw new Error('Use imagens JPG, PNG, WEBP ou AVIF.');
+      if(file.size>10*1024*1024)throw new Error('Cada imagem pode ter no máximo 10 MB.');
+      const safe=file.name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]/g,'-')||'imagem';
+      const path=crypto.randomUUID()+'-'+safe;
+      const {error}=await moradaClient.storage.from('property-images').upload(path,file,{upsert:false,contentType:file.type});
+      if(error)throw new Error('Falha no upload da imagem: '+error.message);
+      urls.push(moradaClient.storage.from('property-images').getPublicUrl(path).data.publicUrl);
+    }
+    return urls;
+  }
+};
 async function initialize(){
   if(path==='/admin/login'||path==='/admin/login/index.html'){loginPage();return}
   if(path==='/reset-password'){resetPasswordPage();return}
