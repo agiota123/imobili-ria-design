@@ -133,17 +133,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_properties: {
+        Row: {
+          area: number
+          bathrooms: number
+          bedrooms: number
+          built_area: number
+          city: string
+          code: string
+          condo: number
+          created_at: string
+          description: string
+          featured: boolean
+          features: string[]
+          id: string
+          images: string[]
+          iptu: number
+          neighborhood: string
+          parking: number
+          price: number
+          published: boolean
+          purpose: string
+          slug: string
+          state: string
+          status: string
+          suites: number
+          title: string
+          type: string
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      admin_exists: { Args: never; Returns: boolean }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

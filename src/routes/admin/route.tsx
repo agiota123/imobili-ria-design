@@ -1,15 +1,25 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabaseClient } from "@/integrations/supabase/client";
 
-// Guards every /admin page: only signed-in users with the admin role get through.
 export const Route = createFileRoute("/admin")({
   ssr: false,
   beforeLoad: async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/admin/login" });
-    const { data: role } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id).eq("role", "admin").maybeSingle();
-    if (!role) {
-      await supabase.auth.signOut();
+    const client = getSupabaseClient();
+    if (!client) throw redirect({ to: "/admin/login" });
+
+    const { data, error } = await client.auth.getUser();
+    if (error || !data.user) throw redirect({ to: "/admin/login" });
+
+    // Role comes from the database, never from editable user metadata.
+    const { data: role, error: roleError } = await client
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (roleError || !role) {
+      await client.auth.signOut();
       throw redirect({ to: "/admin/login", search: { erro: "sem-acesso" } as any });
     }
   },
