@@ -10,8 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminConfiguracoesRouteImport } from './routes/admin/configuracoes'
+import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as ImovelIdRouteImport } from './routes/imovel/$id'
 import { Route as AdminImoveisIndexRouteImport } from './routes/admin/imoveis/index'
 import { Route as AdminImoveisNovoRouteImport } from './routes/admin/imoveis/novo'
@@ -22,14 +25,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminConfiguracoesRoute = AdminConfiguracoesRouteImport.update({
-  id: '/admin/configuracoes',
-  path: '/admin/configuracoes',
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin_/login',
+  path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImovelIdRoute = ImovelIdRouteImport.update({
@@ -38,24 +56,27 @@ const ImovelIdRoute = ImovelIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminImoveisIndexRoute = AdminImoveisIndexRouteImport.update({
-  id: '/admin/imoveis/',
-  path: '/admin/imoveis/',
-  getParentRoute: () => rootRouteImport,
+  id: '/imoveis/',
+  path: '/imoveis/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminImoveisNovoRoute = AdminImoveisNovoRouteImport.update({
-  id: '/admin/imoveis/novo',
-  path: '/admin/imoveis/novo',
-  getParentRoute: () => rootRouteImport,
+  id: '/imoveis/novo',
+  path: '/imoveis/novo',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminImoveisIdEditarRoute = AdminImoveisIdEditarRouteImport.update({
-  id: '/admin/imoveis/$id/editar',
-  path: '/admin/imoveis/$id/editar',
-  getParentRoute: () => rootRouteImport,
+  id: '/imoveis/$id/editar',
+  path: '/imoveis/$id/editar',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/login': typeof AdminLoginRoute
   '/imovel/$id': typeof ImovelIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
@@ -64,7 +85,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin/login': typeof AdminLoginRoute
   '/imovel/$id': typeof ImovelIdRoute
   '/admin': typeof AdminIndexRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
@@ -74,7 +97,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/configuracoes': typeof AdminConfiguracoesRoute
+  '/admin_/login': typeof AdminLoginRoute
   '/imovel/$id': typeof ImovelIdRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/imoveis/novo': typeof AdminImoveisNovoRoute
@@ -85,7 +111,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/reset-password'
     | '/admin/configuracoes'
+    | '/admin/login'
     | '/imovel/$id'
     | '/admin/'
     | '/admin/imoveis/novo'
@@ -94,7 +123,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/reset-password'
     | '/admin/configuracoes'
+    | '/admin/login'
     | '/imovel/$id'
     | '/admin'
     | '/admin/imoveis/novo'
@@ -103,7 +134,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/reset-password'
     | '/admin/configuracoes'
+    | '/admin_/login'
     | '/imovel/$id'
     | '/admin/'
     | '/admin/imoveis/novo'
@@ -113,12 +147,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   ImovelIdRoute: typeof ImovelIdRoute
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminImoveisNovoRoute: typeof AdminImoveisNovoRoute
-  AdminImoveisIndexRoute: typeof AdminImoveisIndexRoute
-  AdminImoveisIdEditarRoute: typeof AdminImoveisIdEditarRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -130,18 +162,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/configuracoes': {
       id: '/admin/configuracoes'
-      path: '/admin/configuracoes'
+      path: '/configuracoes'
       fullPath: '/admin/configuracoes'
       preLoaderRoute: typeof AdminConfiguracoesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin_/login': {
+      id: '/admin_/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/imovel/$id': {
@@ -153,36 +206,54 @@ declare module '@tanstack/react-router' {
     }
     '/admin/imoveis/': {
       id: '/admin/imoveis/'
-      path: '/admin/imoveis'
+      path: '/imoveis'
       fullPath: '/admin/imoveis/'
       preLoaderRoute: typeof AdminImoveisIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/imoveis/novo': {
       id: '/admin/imoveis/novo'
-      path: '/admin/imoveis/novo'
+      path: '/imoveis/novo'
       fullPath: '/admin/imoveis/novo'
       preLoaderRoute: typeof AdminImoveisNovoRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/imoveis/$id/editar': {
       id: '/admin/imoveis/$id/editar'
-      path: '/admin/imoveis/$id/editar'
+      path: '/imoveis/$id/editar'
       fullPath: '/admin/imoveis/$id/editar'
       preLoaderRoute: typeof AdminImoveisIdEditarRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
   }
 }
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+interface AdminRouteRouteChildren {
+  AdminConfiguracoesRoute: typeof AdminConfiguracoesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminImoveisNovoRoute: typeof AdminImoveisNovoRoute
+  AdminImoveisIndexRoute: typeof AdminImoveisIndexRoute
+  AdminImoveisIdEditarRoute: typeof AdminImoveisIdEditarRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminConfiguracoesRoute: AdminConfiguracoesRoute,
-  ImovelIdRoute: ImovelIdRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminImoveisNovoRoute: AdminImoveisNovoRoute,
   AdminImoveisIndexRoute: AdminImoveisIndexRoute,
   AdminImoveisIdEditarRoute: AdminImoveisIdEditarRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
+  ResetPasswordRoute: ResetPasswordRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  ImovelIdRoute: ImovelIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
