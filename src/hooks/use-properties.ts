@@ -35,7 +35,7 @@ const fromRow = (row: any): Property => ({
   createdAt: String(row.created_at).slice(0, 10),
 });
 
-function toRow(data: Partial<Property>): Record<string, unknown> {
+function toRow(data: Partial<Property>): Record<string, any> {
   const row: Record<string, unknown> = { ...data };
   delete row.id;
   delete row.createdAt;
