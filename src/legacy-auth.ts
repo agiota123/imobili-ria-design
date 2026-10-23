@@ -43,6 +43,7 @@ type MoradaBackendApi = {
   updatePassword(password: string): Promise<void>;
   getProperties(admin?: boolean): Promise<Listing[] | null>;
   replaceProperties(previous: Listing[], next: Listing[]): Promise<Listing[]>;
+  uploadImage(file: File): Promise<string>;
 };
 
 declare global {
@@ -58,6 +59,8 @@ declare global {
 
 const env = import.meta.env as Record<string, string | undefined>;
 const enabled = env["VITE_SUPABASE_ENABLED"] === "true";
+const tenantSlug = env["VITE_TENANT_SLUG"]?.trim().toLowerCase() || "";
+let tenantIdPromise: Promise<string> | null = null;
 const projectUrl = env["VITE_SUPABASE_URL"]?.trim() || "";
 const publishableKey =
   env["VITE_SUPABASE_PUBLISHABLE_KEY"]?.trim() ||
@@ -77,6 +80,19 @@ if (enabled && projectUrl && publishableKey) {
   } catch (error) {
     console.error("[Morada] Supabase configuration is invalid.", error);
   }
+}
+
+async function getTenantId(): Promise<string> {
+  if (!client) throw new Error("O banco ainda não está configurado.");
+  if (!tenantSlug) throw new Error("Falta configurar VITE_TENANT_SLUG para este site.");
+  if (!tenantIdPromise) {
+    tenantIdPromise = client.from("organizations" as any).select("id").eq("slug", tenantSlug).single()
+      .then(({ data, error }: any) => {
+        if (error || !data?.id) throw new Error("Não foi possível identificar a imobiliária deste site.");
+        return String(data.id);
+      });
+  }
+  return tenantIdPromise;
 }
 
 const makeSlug = (value: string) =>
@@ -117,8 +133,9 @@ function fromRow(row: any): Listing {
   };
 }
 
-function toRow(listing: Listing): Record<string, unknown> {
+function toRow(listing: Listing, tenantId: string): Record<string, unknown> {
   return {
+    tenant_id: tenantId,
     slug: listing.slug || makeSlug(listing.title || ""),
     title: listing.title,
     code: listing.code,
@@ -160,10 +177,13 @@ async function verifyAdmin(): Promise<VerifyResult> {
   if (!client) return { authorized: false };
   const { data, error } = await client.auth.getUser();
   if (error || !data.user) return { authorized: false };
+  let tenantId: string;
+  try { tenantId = await getTenantId(); } catch { return { authorized: false, email: data.user.email || "" }; }
   const { data: role, error: roleError } = await client
     .from("user_roles")
     .select("role")
     .eq("user_id", data.user.id)
+    .eq("organization_id" as any, tenantId)
     .eq("role", "admin")
     .maybeSingle();
 
@@ -180,7 +200,7 @@ async function requireAdmin() {
 }
 
 const backend: MoradaBackendApi = {
-  configured: Boolean(client),
+  configured: Boolean(client && tenantSlug),
 
   async login(email, password) {
     const supabase = requireClient();
@@ -228,9 +248,10 @@ const backend: MoradaBackendApi = {
     }
     if (admin) await requireAdmin();
 
+    const tenantId = await getTenantId();
     const result = admin
-      ? await client.from("properties").select("*").order("created_at", { ascending: false })
-      : await client.from("public_properties").select("*").order("created_at", { ascending: false });
+      ? await client.from("properties").select("*").eq("tenant_id" as any, tenantId).order("created_at", { ascending: false })
+      : await client.from("public_properties").select("*").eq("tenant_id" as any, tenantId).order("created_at", { ascending: false });
 
     if (result.error) {
       console.error("[Morada] Could not load properties:", result.error.message);
@@ -242,6 +263,7 @@ const backend: MoradaBackendApi = {
   async replaceProperties(previous, next) {
     const supabase = requireClient();
     await requireAdmin();
+    const tenantId = await getTenantId();
 
     // Demo fixtures can have non-UUID IDs. Only UUIDs are persisted-row identities;
     // never send fixture IDs to Postgres or attempt to delete fixture rows.
@@ -253,18 +275,18 @@ const backend: MoradaBackendApi = {
 
     for (const [id] of oldById) {
       if (newById.has(id)) continue;
-      const { error } = await supabase.from("properties").delete().eq("id", id);
+      const { error } = await supabase.from("properties").delete().eq("id", id).eq("tenant_id" as any, tenantId);
       if (error) throw new Error("Não foi possível excluir o imóvel.");
     }
 
     for (const item of next) {
       const id = String(item.id);
       const old = isUuid(id) ? oldById.get(id) : undefined;
-      const body = toRow(item);
+      const body = toRow(item, tenantId);
       if (old && JSON.stringify(toRow(old)) === JSON.stringify(body)) continue;
 
       const result = old
-        ? await supabase.from("properties").update(body as any).eq("id", id)
+        ? await supabase.from("properties").update(body as any).eq("id", id).eq("tenant_id" as any, tenantId)
         : await supabase.from("properties").insert(body as any);
 
       if (result.error) {
@@ -275,6 +297,23 @@ const backend: MoradaBackendApi = {
 
     const saved = await backend.getProperties(true);
     return saved || [];
+  },
+
+  async uploadImage(file) {
+    const supabase = requireClient();
+    await requireAdmin();
+    await getTenantId();
+    const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "imagem";
+    const path = tenantSlug + "/" + crypto.randomUUID() + "-" + safeName;
+    const { error } = await supabase.storage.from("property-images").upload(path, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type || undefined,
+    });
+    if (error) throw new Error("Não foi possível enviar a foto. Verifique o formato e tente novamente.");
+    const { data } = supabase.storage.from("property-images").getPublicUrl(path);
+    if (!data?.publicUrl) throw new Error("A foto foi enviada, mas não foi possível gerar o endereço público.");
+    return data.publicUrl;
   }
 };
 
