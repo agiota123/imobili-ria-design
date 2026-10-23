@@ -749,6 +749,9 @@ function renderAdminRoute(){if(path==='/admin'||path==='/admin/index.html')dashb
 // Conexão real de autenticação, banco de imóveis e armazenamento de imagens.
 const MORADA_SUPABASE_URL='https://embixorenxbjjzzwihqk.supabase.co';
 const MORADA_SUPABASE_KEY='sb_publishable_Ab0V4lfnH8YdtxXkSiWLpA_QVp3_0H3';
+const MORADA_TENANT_SLUG='imobiliaria-design';
+let moradaTenantIdPromise=null;
+async function moradaTenantId(){if(!moradaTenantIdPromise){moradaTenantIdPromise=moradaClient.from('organizations').select('id').eq('slug',MORADA_TENANT_SLUG).single().then(({data,error})=>{if(error||!data?.id)throw new Error('Não foi possível identificar a imobiliária deste site.');return data.id})}return moradaTenantIdPromise}
 const moradaFetch=(input,init)=>{
   const headers=new Headers(typeof Request!=='undefined'&&input instanceof Request?input.headers:undefined);
   if(init&&init.headers)new Headers(init.headers).forEach((value,key)=>headers.set(key,value));
@@ -765,15 +768,15 @@ const moradaClient=createClient(MORADA_SUPABASE_URL,MORADA_SUPABASE_KEY,{global:
 function moradaFromRow(r){
   return {id:String(r.id),slug:r.slug||slug(r.title||'imovel'),title:r.title||'',code:r.code||'',type:r.type||'Casa',purpose:r.purpose||'Venda',price:Number(r.price)||0,condo:Number(r.condo)||0,iptu:Number(r.iptu)||0,description:r.description||'',state:r.state||'',city:r.city||'',neighborhood:r.neighborhood||'',address:r.address||'',number:r.number||'',zip:r.zip||'',complement:r.complement||'',area:Number(r.area)||0,builtArea:Number(r.built_area)||0,bedrooms:Number(r.bedrooms)||0,suites:Number(r.suites)||0,bathrooms:Number(r.bathrooms)||0,parking:Number(r.parking)||0,features:Array.isArray(r.features)?r.features:[],published:r.published!==false,featured:!!r.featured,status:r.status||'Disponível',images:Array.isArray(r.images)?r.images:[],createdAt:String(r.created_at||new Date().toISOString()).slice(0,10)};
 }
-function moradaToRow(p){
-  return {slug:slug(p.title||'imovel'),title:p.title||'',code:p.code||'',type:p.type||'Casa',purpose:p.purpose||'Venda',price:Number(p.price)||0,condo:Number(p.condo)||0,iptu:Number(p.iptu)||0,description:p.description||'',state:p.state||'',city:p.city||'',neighborhood:p.neighborhood||'',address:p.address||'',number:p.number||'',zip:p.zip||'',complement:p.complement||'',area:Number(p.area)||0,built_area:Number(p.builtArea)||0,bedrooms:Number(p.bedrooms)||0,suites:Number(p.suites)||0,bathrooms:Number(p.bathrooms)||0,parking:Number(p.parking)||0,features:Array.isArray(p.features)?p.features:[],published:!!p.published,featured:!!p.featured,status:p.status||'Disponível',images:Array.isArray(p.images)?p.images:[]};
+function moradaToRow(p,tenantId){
+  return {tenant_id:tenantId,slug:slug(p.title||'imovel'),title:p.title||'',code:p.code||'',type:p.type||'Casa',purpose:p.purpose||'Venda',price:Number(p.price)||0,condo:Number(p.condo)||0,iptu:Number(p.iptu)||0,description:p.description||'',state:p.state||'',city:p.city||'',neighborhood:p.neighborhood||'',address:p.address||'',number:p.number||'',zip:p.zip||'',complement:p.complement||'',area:Number(p.area)||0,built_area:Number(p.builtArea)||0,bedrooms:Number(p.bedrooms)||0,suites:Number(p.suites)||0,bathrooms:Number(p.bathrooms)||0,parking:Number(p.parking)||0,features:Array.isArray(p.features)?p.features:[],published:!!p.published,featured:!!p.featured,status:p.status||'Disponível',images:Array.isArray(p.images)?p.images:[]};
 }
 window.MoradaBackend={
   configured:true,
   async verifyAdmin(){
     const {data,error}=await moradaClient.auth.getUser(),user=data&&data.user;
     if(error||!user)return {authorized:false,user:null};
-    const {data:role,error:roleError}=await moradaClient.from('user_roles').select('role').eq('user_id',user.id).eq('role','admin').maybeSingle();
+    const tenantId=await moradaTenantId();const {data:role,error:roleError}=await moradaClient.from('user_roles').select('role').eq('user_id',user.id).eq('organization_id',tenantId).eq('role','admin').maybeSingle();
     return {authorized:!roleError&&!!role,user};
   },
   async signIn(email,password){
@@ -794,22 +797,23 @@ window.MoradaBackend={
   },
   async getProperties(admin=false){
     if(admin){const auth=await this.verifyAdmin();if(!auth.authorized)throw new Error('Sua sessão de administrador expirou. Entre novamente.');}
-    const {data,error}=await moradaClient.from(admin?'properties':'public_properties').select('*').order('created_at',{ascending:false});
+    const tenantId=await moradaTenantId();const {data,error}=await moradaClient.from(admin?'properties':'public_properties').select('*').eq('tenant_id',tenantId).order('created_at',{ascending:false});
     if(error)throw new Error('Falha ao carregar imóveis do banco: '+error.message);
     return (data||[]).map(moradaFromRow);
   },
   async replaceProperties(previous,next){
     const auth=await this.verifyAdmin();
     if(!auth.authorized)throw new Error('Sua sessão de administrador expirou. Entre novamente.');
+    const tenantId=await moradaTenantId();
     const previousById=new Map(previous.map(p=>[String(p.id),p])),nextIds=new Set(next.map(p=>String(p.id)));
-    for(const old of previous){if(!nextIds.has(String(old.id))){const {error}=await moradaClient.from('properties').delete().eq('id',old.id);if(error)throw new Error('Não foi possível excluir o imóvel: '+error.message);}}
+    for(const old of previous){if(!nextIds.has(String(old.id))){const {error}=await moradaClient.from('properties').delete().eq('id',old.id).eq('tenant_id',tenantId);if(error)throw new Error('Não foi possível excluir o imóvel: '+error.message);}}
     const savedById=new Map();
     for(const item of next){
       let row,error;
       if(previousById.has(String(item.id))){
-        const result=await moradaClient.from('properties').update(moradaToRow(item)).eq('id',item.id).select('*').single();row=result.data;error=result.error;
+        const result=await moradaClient.from('properties').update(moradaToRow(item,tenantId)).eq('id',item.id).eq('tenant_id',tenantId).select('*').single();row=result.data;error=result.error;
       }else{
-        const result=await moradaClient.from('properties').insert(moradaToRow(item)).select('*').single();row=result.data;error=result.error;
+        const result=await moradaClient.from('properties').insert(moradaToRow(item,tenantId)).select('*').single();row=result.data;error=result.error;
       }
       if(error||!row)throw new Error('Não foi possível salvar o imóvel. Confira as permissões do banco'+(error?': '+error.message:'.'));
       savedById.set(String(item.id),moradaFromRow(row));
@@ -824,7 +828,7 @@ window.MoradaBackend={
       if(!['image/jpeg','image/png','image/webp','image/avif'].includes(file.type))throw new Error('Use imagens JPG, PNG, WEBP ou AVIF.');
       if(file.size>10*1024*1024)throw new Error('Cada imagem pode ter no máximo 10 MB.');
       const safe=file.name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]/g,'-')||'imagem';
-      const path=crypto.randomUUID()+'-'+safe;
+      const path=MORADA_TENANT_SLUG+'/'+crypto.randomUUID()+'-'+safe;
       const {error}=await moradaClient.storage.from('property-images').upload(path,file,{upsert:false,contentType:file.type});
       if(error)throw new Error('Falha no upload da imagem: '+error.message);
       urls.push(moradaClient.storage.from('property-images').getPublicUrl(path).data.publicUrl);
