@@ -213,6 +213,80 @@ body.cms-mode *{animation-duration:0s!important;scroll-behavior:auto!important}
   .site .cta-button{min-height:50px;padding:14px 18px}
 }
 </style>
+
+<style id="contact-final-cleanup">
+/* Keep the navigation focused on sections that actually exist. */
+.site-header .nav>a[href*="servi"],.site-header .nav>a[href="#servicos"],.site-header .nav>a[href="#serviços"]{display:none!important}
+/* High-contrast, unmistakable mobile contact action. */
+@media(max-width:520px){
+  .site-header .nav.menu-open>a.nav-cta,
+  .site-header .nav.menu-open>a.nav-cta:link,
+  .site-header .nav.menu-open>a.nav-cta:visited,
+  .site-header .nav.menu-open>a.nav-cta:hover,
+  .site-header .nav.menu-open>a.nav-cta:focus{
+    display:inline-flex!important;align-self:flex-start!important;align-items:center!important;justify-content:center!important;
+    width:max-content!important;min-width:154px!important;min-height:46px!important;padding:13px 18px!important;
+    color:#17211c!important;-webkit-text-fill-color:#17211c!important;background:#f2d7a0!important;
+    border:1px solid #d9bb7d!important;border-radius:999px!important;font-size:12px!important;font-weight:700!important;
+    line-height:1.2!important;letter-spacing:.01em!important;text-decoration:none!important;opacity:1!important;
+    box-shadow:0 8px 22px #0003!important;white-space:nowrap!important
+  }
+  .site-header .nav.menu-open>a.nav-cta:after{display:none!important}
+}
+/* A cleaner, more intentional contact banner above the footer. */
+.site .cta{
+  position:relative;isolation:isolate;overflow:hidden;
+  margin:clamp(28px,4.5vw,58px) clamp(14px,4.5vw,64px);
+  padding:clamp(34px,5.5vw,68px) clamp(24px,6vw,76px);
+  min-height:300px;gap:clamp(24px,5vw,64px);
+  border:1px solid #3d4a3f;border-radius:22px;
+  background:linear-gradient(120deg,#101d19 0%,#172821 60%,#202e25 100%);
+  box-shadow:0 20px 55px rgba(20,31,25,.14)
+}
+.site .cta:before{
+  content:"";position:absolute;z-index:-1;right:-90px;top:-170px;width:430px;aspect-ratio:1;border-radius:50%;
+  border:1px solid #d6bc8640;box-shadow:0 0 0 34px #d6bc8608,0 0 0 70px #d6bc8606,0 0 0 110px #d6bc8604;
+  pointer-events:none
+}
+.site .cta:after{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,#f2d7a0,#a88955 55%,transparent);pointer-events:none
+}
+.site .cta-content{position:relative;z-index:1;max-width:590px}
+.site .cta .kicker{display:flex;align-items:center;gap:10px;color:#d9c18f;font-size:9px;letter-spacing:.2em}
+.site .cta .kicker:before{content:"";width:22px;height:1px;background:#d9c18f}
+.site .cta h2{margin:18px 0 16px;color:#f7f3e9;font-size:clamp(34px,4.4vw,58px);line-height:1.04;letter-spacing:-.035em}
+.site .cta h2 em{color:#e0c994;font-weight:400}
+.site .cta p:not(.kicker){max-width:420px;margin:0;color:#c5cec5;font-size:12px;line-height:1.85}
+.site .cta-button{
+  z-index:1;min-height:58px;gap:12px;padding:16px 21px;
+  border:1px solid #f0d7a0;border-radius:999px;background:#f2d7a0;color:#1d2821;
+  font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 12px 30px #0003
+}
+.site .cta-button:hover{background:#ffe8b8;transform:translateY(-2px);box-shadow:0 16px 34px #0004}
+.site .cta-button .cta-whatsapp-icon{width:19px;height:19px;margin-left:2px}
+.site .cta-button b{font-size:15px;font-weight:500}
+@media(max-width:800px){
+  .site .cta{min-height:0;margin:30px 14px;padding:38px 25px;gap:23px;border-radius:18px}
+  .site .cta-button{align-self:flex-start}
+}
+@media(max-width:520px){
+  .site .cta{margin:24px 12px;padding:32px 22px 30px;gap:20px;border-radius:16px}
+  .site .cta:before{right:-250px;top:-100px;width:350px}
+  .site .cta h2{font-size:clamp(34px,9vw,44px);line-height:1.04;margin:16px 0}
+  .site .cta p:not(.kicker){font-size:11px;line-height:1.8}
+  .site .cta-button{min-height:52px;padding:14px 18px;font-size:11px}
+}
+</style>
+<script id="remove-nonexistent-services-link">
+(function(){
+  document.querySelectorAll('.site-header .nav a').forEach(function(link){
+    var label=(link.textContent||'').trim().toLocaleLowerCase('pt-BR');
+    if(label==='serviços'||label==='servicos'||link.getAttribute('href')==='#servicos'||link.getAttribute('href')==='#serviços')link.remove();
+  });
+})();
+</script>
+
 </head>
 <body class="intro-active">
 <script>(function(){var p=decodeURI(location.pathname).replace(/\/+$/,'')||'/';if(p!=='/'&&p!=='/index.html'){document.body.classList.remove('intro-active');document.body.classList.add('cms-mode');document.documentElement.classList.remove('intro-lock')}})();</script>
