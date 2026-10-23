@@ -243,8 +243,13 @@ const backend: MoradaBackendApi = {
     const supabase = requireClient();
     await requireAdmin();
 
-    const oldById = new Map(previous.map((item) => [String(item.id), item]));
-    const newById = new Map(next.map((item) => [String(item.id), item]));
+    // Demo fixtures can have non-UUID IDs. Only UUIDs are persisted-row identities;
+    // never send fixture IDs to Postgres or attempt to delete fixture rows.
+    const isUuid = (id: string) =>
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+    const oldById = new Map(previous.filter((item) => isUuid(String(item.id))).map((item) => [String(item.id), item]));
+    const nextPersisted = next.filter((item) => isUuid(String(item.id)));
+    const newById = new Map(nextPersisted.map((item) => [String(item.id), item]));
 
     for (const [id] of oldById) {
       if (newById.has(id)) continue;
@@ -252,15 +257,15 @@ const backend: MoradaBackendApi = {
       if (error) throw new Error("Não foi possível excluir o imóvel.");
     }
 
-    for (const [id, item] of newById) {
+    for (const item of next) {
+      const id = String(item.id);
+      const old = isUuid(id) ? oldById.get(id) : undefined;
       const body = toRow(item);
-      const old = oldById.get(id);
-      const changed = !old || JSON.stringify(toRow(old)) !== JSON.stringify(body);
-      if (!changed) continue;
+      if (old && JSON.stringify(toRow(old)) === JSON.stringify(body)) continue;
 
       const result = old
         ? await supabase.from("properties").update(body as any).eq("id", id)
-        : await supabase.from("properties").insert({ ...body, id } as any);
+        : await supabase.from("properties").insert(body as any);
 
       if (result.error) {
         console.error("[Morada] Could not save property:", result.error.message);
@@ -270,7 +275,7 @@ const backend: MoradaBackendApi = {
 
     const saved = await backend.getProperties(true);
     return saved || [];
-  },
+  }
 };
 
 window.MoradaBackend = backend;
