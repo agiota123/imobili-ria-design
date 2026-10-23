@@ -745,7 +745,7 @@ async function initialize(){
   if(path.startsWith('/admin')){
     document.body.classList.add('cms-mode');document.getElementById('intro')?.classList.add('done');
     const access=await window.MoradaBackend.verifyAdmin();
-    if(!access.authorized){if(access.user)await window.MoradaBackend.signOut();location.replace('/admin/login?erro=sem-acesso');return}
+    if(!access.authorized){if(access.user){await window.MoradaBackend.signOut();location.replace('/admin/login?erro=sem-acesso')}else{location.replace('/admin/login')}return}
     window.__MORADA_ADMIN_AUTHORIZED__=true;window.__MORADA_ADMIN_EMAIL__=access.user.email||'';
     const listings=await window.MoradaBackend.getProperties(true);window.__MORADA_PROPERTIES_OVERRIDE__=Array.isArray(listings)?listings:[];
     renderAdminRoute();return
