@@ -7,6 +7,9 @@ type Config = { url: string; key: string };
 function readConfig(): Config {
   const vite = import.meta.env as Record<string, string | undefined>;
   const server = typeof process !== "undefined" ? process.env : undefined;
+  const enabled = vite["VITE_SUPABASE_ENABLED"] ?? server?.["VITE_SUPABASE_ENABLED"];
+  // Opt-in prevents a copied site from silently connecting to inherited credentials.
+  if (enabled !== "true") return { url: "", key: "" };
   return {
     url: vite["VITE_SUPABASE_URL"]?.trim() || server?.["SUPABASE_URL"]?.trim() || "",
     key:
