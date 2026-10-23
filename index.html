@@ -371,6 +371,61 @@ body.cms-mode *{animation-duration:0s!important;scroll-behavior:auto!important}
 .auth-simple .auth-message{font-size:12px}
 @media(max-width:480px){.auth-page.auth-simple{padding:18px}.auth-simple .auth-simple-card{border-radius:22px;padding:28px 22px}}
 </style>
+
+<style id="admin-login-redesign">
+.auth-page.auth-redesign{--lr-forest:#172b25;--lr-forest2:#203b31;--lr-gold:#c4a978;--lr-paper:#faf8f2;--lr-muted:#7d8278;min-height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:34px clamp(18px,4vw,56px) 18px;background:#f0eee7;color:#202922;font-family:'DM Sans',sans-serif;position:relative;isolation:isolate;overflow:hidden}
+.auth-redesign:before{content:"";position:absolute;z-index:-1;width:560px;height:560px;top:-330px;right:-100px;border:1px solid #c8b99555;border-radius:50%;box-shadow:0 0 0 45px #c8b99512,0 0 0 90px #c8b9950c}
+.auth-redesign .login-back-home{position:absolute;left:clamp(18px,4vw,56px);top:25px;display:inline-flex;align-items:center;gap:9px;color:#61685e;text-decoration:none;font-size:12px;transition:color .2s}
+.auth-redesign .login-back-home:hover{color:#172b25}
+.login-layout{width:min(100%,1050px);min-height:590px;display:grid;grid-template-columns:1.02fr .98fr;background:var(--lr-paper);border:1px solid #dfded4;border-radius:7px;overflow:hidden;box-shadow:0 32px 90px #20292214;margin:auto}
+.login-showcase{background:var(--lr-forest);color:#f9f6ee;padding:clamp(28px,4.3vw,54px);display:flex;flex-direction:column;justify-content:space-between;position:relative;isolation:isolate;overflow:hidden}
+.login-showcase:before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(145deg,#1b332a 0%,#172b25 52%,#0d1d18 100%)}
+.login-showcase:after{content:"";position:absolute;z-index:-1;width:430px;height:430px;border:1px solid #d4bd8b35;border-radius:50%;right:-205px;bottom:8px;box-shadow:0 0 0 35px #d4bd8b09,0 0 0 75px #d4bd8b08,0 0 0 120px #d4bd8b06}
+.login-brand{display:flex;align-items:center;gap:13px}
+.login-brand-mark{width:42px;height:42px;display:grid;place-items:center;border:1px solid #c4a978;color:#d8c49a;font:italic 29px 'Playfair Display',Georgia,serif}
+.login-brand b,.login-mobile-brand b{display:block;font:500 14px 'Playfair Display',Georgia,serif;letter-spacing:.12em;color:#fbf7ec}
+.login-brand small,.login-mobile-brand small{display:block;margin-top:6px;font-size:8px;letter-spacing:.2em;color:#b9c0b5}
+.login-showcase-copy{margin:70px 0 58px;max-width:390px}
+.login-overline{display:flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.2em;color:#d1bc91}
+.login-overline i,.login-options>span i{width:6px;height:6px;border-radius:50%;background:#c4a978;display:inline-block}
+.login-showcase-copy h2{font:400 clamp(37px,4.7vw,58px)/1.08 'Playfair Display',Georgia,serif;letter-spacing:-.035em;margin:24px 0 19px;color:#faf7ee}
+.login-showcase-copy h2 em{font-weight:400;color:#d2bc91}
+.login-showcase-copy p{max-width:310px;color:#c0c8be;font-size:12px;line-height:1.95;margin:0}
+.login-showcase-bottom{display:flex;justify-content:space-between;gap:12px;padding-top:19px;border-top:1px solid #ffffff20;color:#a8b2a7;font-size:8px;letter-spacing:.12em}
+.login-panel{display:flex;align-items:center;justify-content:center;padding:clamp(28px,5vw,64px)}
+.login-panel-content{width:100%;max-width:355px}
+.login-eyebrow{color:#8b7855;font-size:9px;letter-spacing:.2em;font-weight:700}
+.login-panel-content h1{font:400 clamp(29px,3vw,38px)/1.16 'Playfair Display',Georgia,serif;letter-spacing:-.025em;color:#202922;margin:16px 0 10px}
+.login-panel-content h1>span{color:#b59a69}
+.login-subtitle{font-size:12px;line-height:1.7;color:#85887f;margin:0 0 32px}
+.login-form{display:grid;gap:20px}
+.login-label{display:grid;gap:9px;color:#454c43;font-size:11px;font-weight:600}
+.login-input-wrap{height:51px;display:flex;align-items:center;gap:11px;padding:0 13px;border:1px solid #dfdfd5;background:#fffefa;transition:border .2s,box-shadow .2s}
+.login-input-wrap:focus-within{border-color:#9e895f;box-shadow:0 0 0 3px #b89a6918}
+.login-input-icon{font-size:15px;color:#9a8b6d;width:16px;text-align:center}
+.login-input-wrap input{min-width:0;flex:1;width:100%;height:100%;border:0!important;outline:none!important;box-shadow:none!important;background:transparent!important;padding:0!important;color:#202922;font:12px 'DM Sans',sans-serif}
+.login-input-wrap input::placeholder{color:#b2b4ac}
+.login-show-password{border:0;background:none;color:#857454;font:600 10px 'DM Sans',sans-serif;cursor:pointer;padding:8px 0}
+.login-options{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:-2px}
+.login-options>span{display:flex;align-items:center;gap:7px;color:#777e73;font-size:10px}
+.login-options>span i{width:5px;height:5px;background:#65866b}
+.login-options button{padding:0;border:0;background:none;color:#88734e;font:600 10px 'DM Sans',sans-serif;cursor:pointer}
+.login-options button:hover{text-decoration:underline}
+.login-submit{width:100%;height:52px;padding:0 17px;border:1px solid var(--lr-forest);background:var(--lr-forest);color:#fffdf6;display:flex;align-items:center;justify-content:space-between;font:600 12px 'DM Sans',sans-serif;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.login-submit:hover{background:var(--lr-forest2);border-color:var(--lr-forest2);transform:translateY(-1px)}
+.login-submit:disabled{opacity:.7;cursor:wait;transform:none}
+.login-submit-arrow{font-size:19px;color:#d2bc91}
+.login-spinner{width:15px;height:15px;border:2px solid #ffffff55;border-top-color:#d2bc91;border-radius:50%;animation:login-spin .8s linear infinite}
+@keyframes login-spin{to{transform:rotate(360deg)}}
+.login-panel-foot{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #e8e6dc;margin-top:35px;padding-top:17px;color:#9a9b91;font-size:8px;letter-spacing:.1em}
+.login-mobile-brand{display:none}
+.auth-redesign .auth-message{font-size:11px;padding:12px 13px;border-radius:2px}
+.auth-redesign .login-form .auth-message:empty{display:none}
+.login-legal{color:#98998f;font-size:9px;letter-spacing:.04em;margin:15px 0 0;text-align:center}
+@media(max-width:760px){.auth-page.auth-redesign{padding:75px 16px 18px;justify-content:flex-start}.auth-redesign .login-back-home{top:23px}.login-layout{grid-template-columns:1fr;max-width:480px;min-height:0}.login-showcase{display:none}.login-panel{padding:34px 25px 27px}.login-mobile-brand{display:flex;align-items:center;gap:12px;margin-bottom:38px}.login-mobile-brand .login-brand-mark{border-color:#c4a978;color:#a78b58}.login-mobile-brand b{color:#24352b;font-size:12px}.login-mobile-brand small{color:#92958a}.login-panel-content h1{font-size:34px}.login-subtitle{margin-bottom:27px}.login-panel-foot{margin-top:27px}}
+@media(max-width:360px){.auth-page.auth-redesign{padding-left:10px;padding-right:10px}.login-panel{padding:28px 18px 22px}.login-mobile-brand{margin-bottom:30px}.login-options{align-items:flex-start;flex-direction:column;gap:12px}.login-panel-foot{font-size:7px}}
+@media(prefers-reduced-motion:reduce){.login-submit,.login-input-wrap{transition:none}.login-spinner{animation:none}}
+</style>
 </head>
 <body class="intro-active">
 <script>(function(){var p=decodeURI(location.pathname).replace(/\/+$/,'')||'/';if(p!=='/'&&p!=='/index.html'){document.body.classList.remove('intro-active');document.body.classList.add('cms-mode');document.documentElement.classList.remove('intro-lock')}})();</script>
@@ -643,17 +698,26 @@ const path=decodeURI(location.pathname).replace(/\/+$/,'')||'/';
 function authPageBase(content){document.body.classList.add('cms-mode');document.getElementById('intro')?.classList.add('done');document.documentElement.classList.remove('intro-lock');root.innerHTML=content}
 function showAuthMessage(message,type){const node=document.getElementById('auth-message');if(!node)return;node.textContent=message;node.className='auth-message show '+type}
 function loginPage(){
-  authPageBase('<div class="auth-page auth-simple"><main class="auth-main"><section class="auth-card auth-simple-card"><form class="auth-form auth-simple-form" id="auth-form"><h1>Login</h1><label class="auth-field" for="auth-email">Username<input id="auth-email" name="username" type="email" required autocomplete="username" placeholder="Seu e-mail de acesso"></label><label class="auth-field" for="auth-password">Senha<input id="auth-password" name="password" type="password" required autocomplete="current-password" placeholder="Sua senha"></label><label class="auth-remember" for="auth-remember"><input id="auth-remember" type="checkbox"> <span>Remember me</span></label><div id="auth-message" class="auth-message" role="status" aria-live="polite"></div><button id="auth-submit" class="auth-submit" type="submit">Login</button></form></section></main></div>');
-  const form=document.getElementById('auth-form'),emailField=document.getElementById('auth-email'),passwordField=document.getElementById('auth-password'),remember=document.getElementById('auth-remember'),submit=document.getElementById('auth-submit');
+  authPageBase('<div class="auth-page auth-redesign"><a class="login-back-home" href="/" aria-label="Voltar ao site">← <span>Voltar ao site</span></a><main class="login-layout"><section class="login-showcase"><div class="login-brand"><span class="login-brand-mark">M</span><span><b>NOME DA IMOBILIÁRIA</b><small>IMÓVEIS SELECIONADOS · DF</small></span></div><div class="login-showcase-copy"><span class="login-overline"><i></i> PORTAL EXCLUSIVO</span><h2>Um espaço<br>para <em>bons negócios.</em></h2><p>Gerencie seu portfólio imobiliário com clareza, cuidado e controle em cada detalhe.</p></div><div class="login-showcase-bottom"><span>IMÓVEIS · GESTÃO · EXCLUSIVIDADE</span><span>01 — ÁREA RESTRITA</span></div></section><section class="login-panel"><div class="login-mobile-brand"><span class="login-brand-mark">M</span><span><b>NOME DA IMOBILIÁRIA</b><small>ÁREA ADMINISTRATIVA</small></span></div><div class="login-panel-content"><div class="login-eyebrow">BEM-VINDO DE VOLTA</div><h1>Acesse seu painel<span>.</span></h1><p class="login-subtitle">Entre com suas credenciais para continuar.</p><form class="login-form" id="auth-form"><label class="login-label" for="auth-email">E-mail de acesso<div class="login-input-wrap"><span class="login-input-icon">✉</span><input id="auth-email" name="email" type="email" required autocomplete="username" placeholder="voce@imobiliaria.com"></div></label><label class="login-label" for="auth-password">Senha<div class="login-input-wrap"><span class="login-input-icon">⌑</span><input id="auth-password" name="password" type="password" required autocomplete="current-password" placeholder="Digite sua senha"><button class="login-show-password" id="toggle-password" type="button" aria-label="Mostrar senha">Mostrar</button></div></label><div id="auth-message" class="auth-message" role="status" aria-live="polite"></div><div class="login-options"><span><i></i> Conexão protegida</span><button type="button" id="auth-forgot">Esqueci minha senha</button></div><button id="auth-submit" class="login-submit" type="submit"><span>Entrar no painel</span><span class="login-submit-arrow">↗</span></button></form><div class="login-panel-foot"><span>ACESSO EXCLUSIVO A ADMINISTRADORES</span><span>© 2026</span></div></div></section></main><p class="login-legal">Privacidade e segurança em cada acesso.</p></div>');
+  const form=document.getElementById('auth-form'),emailField=document.getElementById('auth-email'),passwordField=document.getElementById('auth-password'),submit=document.getElementById('auth-submit'),forgot=document.getElementById('auth-forgot'),toggle=document.getElementById('toggle-password');
   if(new URLSearchParams(location.search).get('erro')==='sem-acesso')showAuthMessage('Esta conta não tem permissão de administrador.','error');
   window.MoradaBackend.verifyAdmin().then(result=>{if(result.authorized)location.replace('/admin')}).catch(()=>{});
+  toggle.onclick=()=>{const show=passwordField.type==='password';passwordField.type=show?'text':'password';toggle.textContent=show?'Ocultar':'Mostrar';toggle.setAttribute('aria-label',show?'Ocultar senha':'Mostrar senha')};
   form.onsubmit=async function(event){
-    event.preventDefault();submit.disabled=true;submit.textContent='Entrando…';
-    window.__MORADA_REMEMBER_ME__=remember.checked;
+    event.preventDefault();submit.disabled=true;submit.innerHTML='<span>Verificando acesso…</span><span class="login-spinner"></span>';
     try{await window.MoradaBackend.signIn(emailField.value.trim(),passwordField.value);location.replace('/admin')}
-    catch(error){showAuthMessage(error&&error.message?error.message:'Não foi possível entrar. Confira os dados e tente novamente.','error');submit.disabled=false;submit.textContent='Login'}
+    catch(error){showAuthMessage(error&&error.message?error.message:'Não foi possível entrar. Confira os dados e tente novamente.','error');submit.disabled=false;submit.innerHTML='<span>Entrar no painel</span><span class="login-submit-arrow">↗</span>'}
   };
-}function resetPasswordPage(){
+  forgot.onclick=async function(){
+    const email=emailField.value.trim();
+    if(!email){showAuthMessage('Digite seu e-mail acima para receber as instruções de recuperação.','notice');emailField.focus();return}
+    forgot.disabled=true;
+    try{await window.MoradaBackend.resetPassword(email,location.origin+'/reset-password');showAuthMessage('Se houver uma conta vinculada a esse e-mail, as instruções de recuperação serão enviadas.','success')}
+    catch(error){showAuthMessage(error&&error.message?error.message:'Não foi possível solicitar a recuperação agora.','error')}
+    finally{forgot.disabled=false}
+  };
+}
+function resetPasswordPage(){
   authPageBase('<div class="auth-page"><header class="auth-header"><a class="auth-wordmark" href="/"><span class="auth-wordmark-icon">M</span><span><b>NOME DA IMOBILIÁRIA</b><small>IMOBILIÁRIA</small></span></a><a href="/admin/login" class="auth-back">← Voltar ao login</a></header><main class="auth-main"><section class="auth-card" style="max-width:500px;min-height:0;grid-template-columns:1fr"><div class="auth-form-panel"><form class="auth-form" id="reset-form"><div class="auth-lock">⌑</div><div><p class="auth-kicker">SEGURANÇA DA CONTA</p><h1>Defina uma nova senha.</h1><p class="auth-intro">Use uma senha exclusiva com pelo menos 10 caracteres.</p></div><div class="auth-fields"><label class="auth-field">Nova senha<input id="reset-password" type="password" required minlength="10" autocomplete="new-password"></label><label class="auth-field">Confirmar senha<input id="reset-confirm" type="password" required minlength="10" autocomplete="new-password"></label></div><div id="auth-message" class="auth-message" role="status" aria-live="polite"></div><button class="auth-submit" id="reset-submit" type="submit">Atualizar senha <span>↗</span></button></form></div></section></main><footer class="auth-footer"><span>© 2026 NOME DA IMOBILIÁRIA</span><span>Privacidade e segurança em cada acesso</span></footer></div>');
   document.getElementById('reset-form').onsubmit=async function(event){event.preventDefault();const p=document.getElementById('reset-password').value,c=document.getElementById('reset-confirm').value,button=document.getElementById('reset-submit');if(p!==c){showAuthMessage('As senhas não coincidem.','error');return}if(!window.MoradaBackend||!window.MoradaBackend.configured){showAuthMessage('A autenticação ainda não está configurada neste ambiente.','notice');return}button.disabled=true;button.textContent='Salvando...';try{await window.MoradaBackend.updatePassword(p);showAuthMessage('Senha atualizada. Redirecionando para o painel...','success');setTimeout(()=>location.replace('/admin'),500)}catch(error){showAuthMessage(error&&error.message?error.message:'Não foi possível atualizar a senha.','error')}finally{button.disabled=false;button.innerHTML='Atualizar senha <span>↗</span>'}}
 }
