@@ -1,0 +1,1 @@
+import{createFileRoute}from"@tanstack/react-router";import{AdminPages}from"../../../../components/AdminPages";export const Route=createFileRoute("/admin/imoveis/$id/editar")({component:Edit});function Edit(){const{id}=Route.useParams();return <AdminPages page="edit" id={id}/>}
